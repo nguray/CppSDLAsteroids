@@ -1,3 +1,5 @@
 highscores.txt
 debug/*
 release/*
+build/*
+.cache/*

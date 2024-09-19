@@ -569,7 +569,7 @@ int main(int argc, char *argv[]) {
 
         SDL_Delay(20);
 
-        std::cout << "nbRocks : " << rocks.size() << std::endl;
+        // std::cout << "nbRocks : " << rocks.size() << std::endl;
       }
 
       Mix_CloseAudio();
