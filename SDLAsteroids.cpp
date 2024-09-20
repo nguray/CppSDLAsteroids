@@ -160,6 +160,36 @@ void NewGame() {
   }
 }
 
+void SubDivideRock(std::shared_ptr<Rock> r, float m) {
+  //--
+  auto uv = RVector2D::normalize(r->velocity);
+  auto un = uv.normal();
+  auto normeV = r->velocity.magnitude() * 1.7f;
+
+  // Direction 10h30
+  auto v10 = uv + un;
+  auto p10 = r->pos + (v10 * 10);
+  auto v11 = RVector2D::normalize(v10) * normeV;
+  rocks.push_back(std::make_shared<Rock>(p10, v11, m));
+  // Direction 1h30
+  auto v20 = uv - un;
+  auto p20 = r->pos + (v20 * 10);
+  auto v21 = RVector2D::normalize(v20) * normeV;
+  rocks.push_back(std::make_shared<Rock>(p20, v21, m));
+  // Direction 7h30
+  auto v30 = uv - un;
+  v30.mul(-1);
+  auto p30 = r->pos + v30 * 10;
+  auto v31 = RVector2D::normalize(v30) * normeV;
+  rocks.push_back(std::make_shared<Rock>(p30, v31, m));
+  // Direction 4h30
+  auto v40 = uv + un;
+  v40.mul(-1);
+  auto p40 = r->pos + v40 * 10;
+  auto v41 = RVector2D::normalize(v40) * normeV;
+  rocks.push_back(std::make_shared<Rock>(p40, v41, m));
+}
+
 constexpr const char *resoucesDir{"../resources"};
 
 int main(int argc, char *argv[]) {
@@ -365,91 +395,36 @@ int main(int argc, char *argv[]) {
             //--
             b->UpdatePosition();
 
-            auto fHit = false;
-
-            //--
-            for (const auto rock : rocks) {
-              if ((rock->iExplode == 0) && (b->Hit(rock))) {
-                b->fDelete = true;
-                fHit = true;
-                if (rock->mass == 2) {
-                  rock->fDelete = true;
-                  //-- SubDivide
-                  auto m = rock->mass / 3.0;
-                  auto uv = RVector2D::normalize(rock->velocity);
-                  auto un = uv.normal();
-                  auto normeV = rock->velocity.magnitude() * 1.7f;
-
-                  // Direction 10h30
-                  auto v10 = uv + un;
-                  auto p10 = rock->pos + (v10 * 10);
-                  auto v11 = RVector2D::normalize(v10) * normeV;
-                  rocks.push_back(std::make_shared<Rock>(p10, v11, m));
-                  // Direction 1h30
-                  auto v20 = uv - un;
-                  auto p20 = rock->pos + (v20 * 10);
-                  auto v21 = RVector2D::normalize(v20) * normeV;
-                  rocks.push_back(std::make_shared<Rock>(p20, v21, m));
-                  // Direction 7h30
-                  auto v30 = uv - un;
-                  v30.mul(-1);
-                  auto p30 = rock->pos + v30 * 10;
-                  auto v31 = RVector2D::normalize(v30) * normeV;
-                  rocks.push_back(std::make_shared<Rock>(p30, v31, m));
-                  // Direction 4h30
-                  auto v40 = uv + un;
-                  v40.mul(-1);
-                  auto p40 = rock->pos + v40 * 10;
-                  auto v41 = RVector2D::normalize(v40) * normeV;
-                  rocks.push_back(std::make_shared<Rock>(p40, v41, m));
-
-                  // fPause = true
-                } else if (rock->mass == 1) {
-
-                  rock->fDelete = true;
-                  //-- SubDivide
-                  auto m = rock->mass / 2.0;
-                  auto uv = RVector2D::normalize(rock->velocity);
-                  auto un = uv.normal();
-                  auto normeV = rock->velocity.magnitude() * 1.4f;
-
-                  // Direction 10h30
-                  auto v10 = uv + un;
-                  auto p10 = rock->pos + (v10 * 10);
-                  auto v11 = RVector2D::normalize(v10) * normeV;
-                  rocks.push_back(std::make_shared<Rock>(p10, v11, m));
-                  // Direction 1h30
-                  auto v20 = uv - un;
-                  auto p20 = rock->pos + (v20 * 10);
-                  auto v21 = RVector2D::normalize(v20) * normeV;
-                  rocks.push_back(std::make_shared<Rock>(p20, v21, m));
-                  // Direction 7h30
-                  auto v30 = uv - un;
-                  v30.mul(-1);
-                  auto p30 = rock->pos + v30 * 10;
-                  auto v31 = RVector2D::normalize(v30) * normeV;
-                  rocks.push_back(std::make_shared<Rock>(p30, v31, m));
-                  // Direction 4h30
-                  auto v40 = uv + un;
-                  v40.mul(-1);
-                  auto p40 = rock->pos + v40 * 10;
-                  auto v41 = RVector2D::normalize(v40) * normeV;
-                  rocks.push_back(std::make_shared<Rock>(p40, v41, m));
-
-                  // fPause = true
-                } else {
-                  rock->iExplode = 1;
-                  rock->InitExplosion();
-
-                  //  fPause = true
-                }
-                break;
-              }
-            }
-
             if ((b->pos.x < 0) || (b->pos.x > WIN_WIDTH) || (b->pos.y < 0) ||
                 (b->pos.y > WIN_HEIGHT)) {
               b->fDelete = true;
+            } else {
+
+              //--
+              for (const auto rock : rocks) {
+                if ((rock->iExplode == 0) && (b->Hit(rock))) {
+                  b->fDelete = true;
+                  if (rock->mass == 2) {
+                    rock->fDelete = true;
+                    //-- SubDivide
+                    SubDivideRock(rock, rock->mass / 3.0);
+
+                    // fPause = true
+                  } else if (rock->mass == 1) {
+                    rock->fDelete = true;
+                    //-- SubDivide
+                    SubDivideRock(rock, rock->mass / 2.0);
+
+                    // fPause = true
+                  } else {
+                    rock->iExplode = 1;
+                    rock->InitExplosion();
+
+                    //  fPause = true
+                  }
+                  break;
+                }
+              }
             }
           }
 
