@@ -39,24 +39,12 @@ typedef enum { STAND_BY, PLAY, GAME_OVER, HIGH_SCORES } GameMode;
 #define WIN_WIDTH 800
 #define WIN_HEIGHT 600
 
-float rcos[NB_COSSINS];
-float rsin[NB_COSSINS];
-
 bool fPause = true;
 std::shared_ptr<Ship> ship{
     new Ship(RVector2D{WIN_WIDTH / 2.0, WIN_HEIGHT / 2.0}, -90.0)};
 
 std::vector<std::shared_ptr<Bullet>> bullets;
 std::vector<std::shared_ptr<Rock>> rocks;
-
-void PreCalculateCosSin() {
-  auto aOffset = 360.0 / NB_COSSINS;
-  for (int i = 0; i < NB_COSSINS; ++i) {
-    auto ra = i * aOffset * M_PI / 180.0;
-    rcos[i] = static_cast<float>(cos(ra));
-    rsin[i] = static_cast<float>(sin(ra));
-  }
-}
 
 void DoScreenFrameCollison(std::shared_ptr<GameObject> obj, SDL_Rect &scrRect) {
   auto left = static_cast<float>(scrRect.x) + obj->radius;
@@ -291,7 +279,7 @@ int main(int argc, char *argv[]) {
       // Main loop flag
       bool quit = false;
 
-      PreCalculateCosSin();
+      Rock::InitCosSinValues();
 
       // Init new game
       NewGame();
@@ -561,6 +549,7 @@ int main(int argc, char *argv[]) {
 
         if (rocks.size() == 0) {
           NewGame();
+          bullets.clear();
           fPause = true;
           while (SDL_PollEvent(&e) != 0) {
           }

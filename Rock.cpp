@@ -1,8 +1,8 @@
 #include "Rock.h"
 #include <math.h>
 
-extern float rcos[NB_COSSINS];
-extern float rsin[NB_COSSINS];
+float Rock::sav_cos[] = {};
+float Rock::sav_sin[] = {};
 
 Rock::Rock() : GameObject(), iExplode(0) {}
 
@@ -13,16 +13,7 @@ Rock::Rock(RVector2D p, RVector2D v, float m) : GameObject(), iExplode(0) {
   radius = 10.0 * m;
 }
 
-Rock::~Rock() {
-  for (auto p : points) {
-    delete p;
-  }
-  points.clear();
-  for (auto v : explVecs) {
-    delete v;
-  }
-  explVecs.clear();
-}
+Rock::~Rock() {}
 
 void Rock::UpdatePosition() { pos += velocity; }
 
@@ -51,10 +42,10 @@ void Rock::Draw(SDL_Renderer *renderer) {
 
 void Rock::InitExplosion() {
   for (int i = 0; i < NB_COSSINS; ++i) {
-    auto v = new RVector2D{2.0f * rcos[i], 2.0f * rsin[i]};
+    auto v = std::make_shared<RVector2D>(2.0f * sav_cos[i], 2.0f * sav_sin[i]);
     explVecs.push_back(v);
     auto p = pos + *v;
-    points.push_back(new RVector2D{p.x, p.y});
+    points.push_back(std::make_shared<RVector2D>(p.x, p.y));
   }
 }
 
@@ -65,5 +56,15 @@ void Rock::UpdateExplosion() {
     p += *explVecs[i];
     points[i]->x = p.x;
     points[i]->y = p.y;
+  }
+}
+
+void Rock::InitCosSinValues() {
+  //--
+  double aOffset = (360.0 / NB_COSSINS) * M_PI / 180.0;
+  for (int i = 0; i < NB_COSSINS; ++i) {
+    double ra = i * aOffset;
+    sav_cos[i] = cos(ra);
+    sav_sin[i] = sin(ra);
   }
 }

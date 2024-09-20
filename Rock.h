@@ -1,11 +1,15 @@
 #pragma once
 #include "GameObject.h"
+#include "RVector2D.h"
 #include <SDL.h>
+#include <memory>
 #include <vector>
 
-#define NB_COSSINS 6
-
 class Rock : public GameObject {
+private:
+#define NB_COSSINS 6
+  static float sav_cos[6];
+  static float sav_sin[6];
 
 public:
   Rock();
@@ -17,10 +21,10 @@ public:
   void InitExplosion();
   void UpdateExplosion();
 
-  static void PreCalculateCosSin();
+  static void InitCosSinValues();
 
   int iExplode;
 
-  std::vector<RVector2D *> explVecs;
-  std::vector<RVector2D *> points;
+  std::vector<std::shared_ptr<RVector2D>> explVecs;
+  std::vector<std::shared_ptr<RVector2D>> points;
 };
