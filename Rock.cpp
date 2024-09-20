@@ -32,7 +32,7 @@ void Rock::Draw(SDL_Renderer *renderer) {
     SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
     for (int i = 0; i < NB_COSSINS; ++i) {
       auto p1 = *points[i];
-      auto v = explVecs[i]->normalize();
+      auto v = RVector2D::normalize(*explVecs[i]);
       v.mul(static_cast<float>(iExplode));
       auto p2 = p1 + v;
       SDL_RenderDrawLineF(renderer, p1.x, p1.y, p2.x, p2.y);

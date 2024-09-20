@@ -8,21 +8,21 @@ float RVector2D::magnitude() { return std::sqrt(x * x + y * y); }
 
 // Get a unit vector in the direction of this vector
 // If this vector is the 0 vector, return a 0 vector
-RVector2D RVector2D::normalize() {
+void RVector2D::normalize() {
   double mag = magnitude();
+  if (mag != 0.0) {
+    x /= mag;
+    y /= mag;
+  }
+}
+
+RVector2D RVector2D::normalize(RVector2D v) {
+  double mag = std::sqrt(v.x * v.x + v.y * v.y);
   if (mag != 0.)
-    return RVector2D(x / mag, y / mag);
+    return RVector2D(v.x / mag, v.y / mag);
   else
     return RVector2D();
 }
-
-// RVector2D RVector2D::normalize(RVector2D v) {
-//   double mag = std::sqrt(v.x * v.x + v.y * v.y);
-//   if (mag != 0.)
-//     return RVector2D(v.x / mag, v.y / mag);
-//   else
-//     return RVector2D();
-// }
 
 RVector2D RVector2D::normal() { return RVector2D(y, -x); }
 

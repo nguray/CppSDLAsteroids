@@ -19,7 +19,7 @@ bool Bullet::Hit(std::shared_ptr<Rock> r) {
 
 void Bullet::Draw(SDL_Renderer *renderer) {
   //--
-  auto uv = velocity.normalize();
+  auto uv = RVector2D::normalize(velocity);
   auto tv = uv.normal();
 
   uv.mul(5.0);

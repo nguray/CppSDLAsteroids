@@ -81,8 +81,8 @@ void DoCollison(std::shared_ptr<GameObject> obj0,
     auto nV12 = v;
     auto tV12 = v.normal();
 
-    auto unV12 = nV12.normalize();
-    auto utV12 = tV12.normalize();
+    auto unV12 = RVector2D::normalize(nV12);
+    auto utV12 = RVector2D::normalize(tV12);
 
     auto nV1 = veloVec0.dot(unV12);
     auto tV1 = veloVec0.dot(utV12);
@@ -276,9 +276,6 @@ int main(int argc, char *argv[]) {
       Uint32 startExplodeUpdate = SDL_GetTicks();
       Uint32 startTimeR = startTimeV;
 
-      // Main loop flag
-      bool quit = false;
-
       Rock::InitCosSinValues();
 
       // Init new game
@@ -289,12 +286,14 @@ int main(int argc, char *argv[]) {
       // Event handler
       SDL_Event e;
 
+      // Main loop flag
       bool fQuitGame = false;
+
       int iRotate = 0;
       int iAccel = 0;
 
       // While application is running
-      while (!quit) {
+      while (!fQuitGame) {
 
         //--
         SDL_SetRenderDrawColor(renderer, 16, 16, 64, 64);
@@ -340,10 +339,6 @@ int main(int argc, char *argv[]) {
           }
         }
 
-        if (fQuitGame) {
-          break;
-        }
-
         if (iRotate < 0) {
           ship->OffsetAngle(2);
         } else if (iRotate > 0) {
@@ -381,37 +376,32 @@ int main(int argc, char *argv[]) {
                   rock->fDelete = true;
                   //-- SubDivide
                   auto m = rock->mass / 3.0;
-                  auto uv = rock->velocity.normalize();
+                  auto uv = RVector2D::normalize(rock->velocity);
                   auto un = uv.normal();
                   auto normeV = rock->velocity.magnitude() * 1.7f;
 
+                  // Direction 10h30
                   auto v10 = uv + un;
-                  v10.mul(10);
-                  auto p10 = rock->pos + v10;
-                  auto uv10 = v10.normalize();
-                  uv10.mul(normeV);
-                  rocks.push_back(std::make_shared<Rock>(p10, uv10, m));
-
+                  auto p10 = rock->pos + (v10 * 10);
+                  auto v11 = RVector2D::normalize(v10) * normeV;
+                  rocks.push_back(std::make_shared<Rock>(p10, v11, m));
+                  // Direction 1h30
                   auto v20 = uv - un;
-                  v20.mul(10);
-                  auto p20 = rock->pos + v20;
-                  auto uv20 = v20.normalize();
-                  uv20.mul(normeV);
-                  rocks.push_back(std::make_shared<Rock>(p20, uv20, m));
-
-                  auto v30 = un - uv;
-                  auto p30 = rock->pos - v30;
-                  auto uv30 = v30.normalize();
-                  uv30.mul(normeV);
-                  rocks.push_back(std::make_shared<Rock>(p30, uv30, m));
-
+                  auto p20 = rock->pos + (v20 * 10);
+                  auto v21 = RVector2D::normalize(v20) * normeV;
+                  rocks.push_back(std::make_shared<Rock>(p20, v21, m));
+                  // Direction 7h30
+                  auto v30 = uv - un;
+                  v30.mul(-1);
+                  auto p30 = rock->pos + v30 * 10;
+                  auto v31 = RVector2D::normalize(v30) * normeV;
+                  rocks.push_back(std::make_shared<Rock>(p30, v31, m));
+                  // Direction 4h30
                   auto v40 = uv + un;
                   v40.mul(-1);
-                  v40.mul(10);
-                  auto p40 = rock->pos + v40;
-                  auto uv40 = v40.normalize();
-                  uv40.mul(normeV);
-                  rocks.push_back(std::make_shared<Rock>(p40, uv40, m));
+                  auto p40 = rock->pos + v40 * 10;
+                  auto v41 = RVector2D::normalize(v40) * normeV;
+                  rocks.push_back(std::make_shared<Rock>(p40, v41, m));
 
                   // fPause = true
                 } else if (rock->mass == 1) {
@@ -419,37 +409,32 @@ int main(int argc, char *argv[]) {
                   rock->fDelete = true;
                   //-- SubDivide
                   auto m = rock->mass / 2.0;
-                  auto uv = rock->velocity.normalize();
+                  auto uv = RVector2D::normalize(rock->velocity);
                   auto un = uv.normal();
                   auto normeV = rock->velocity.magnitude() * 1.4f;
 
+                  // Direction 10h30
                   auto v10 = uv + un;
-                  v10.mul(10);
-                  auto p10 = rock->pos + v10;
-                  auto uv10 = v10.normalize();
-                  uv10.mul(normeV);
-                  rocks.push_back(std::make_shared<Rock>(p10, uv10, m));
-
+                  auto p10 = rock->pos + (v10 * 10);
+                  auto v11 = RVector2D::normalize(v10) * normeV;
+                  rocks.push_back(std::make_shared<Rock>(p10, v11, m));
+                  // Direction 1h30
                   auto v20 = uv - un;
-                  v20.mul(10);
-                  auto p20 = rock->pos + v20;
-                  auto uv20 = v20.normalize();
-                  uv20.mul(normeV);
-                  rocks.push_back(std::make_shared<Rock>(p20, uv20, m));
-
-                  auto v30 = un - uv;
-                  auto p30 = rock->pos - v30;
-                  auto uv30 = v30.normalize();
-                  uv30.mul(normeV);
-                  rocks.push_back(std::make_shared<Rock>(p30, uv30, m));
-
+                  auto p20 = rock->pos + (v20 * 10);
+                  auto v21 = RVector2D::normalize(v20) * normeV;
+                  rocks.push_back(std::make_shared<Rock>(p20, v21, m));
+                  // Direction 7h30
+                  auto v30 = uv - un;
+                  v30.mul(-1);
+                  auto p30 = rock->pos + v30 * 10;
+                  auto v31 = RVector2D::normalize(v30) * normeV;
+                  rocks.push_back(std::make_shared<Rock>(p30, v31, m));
+                  // Direction 4h30
                   auto v40 = uv + un;
                   v40.mul(-1);
-                  v40.mul(10);
-                  auto p40 = rock->pos + v40;
-                  auto uv40 = v40.normalize();
-                  uv40.mul(normeV);
-                  rocks.push_back(std::make_shared<Rock>(p40, uv40, m));
+                  auto p40 = rock->pos + v40 * 10;
+                  auto v41 = RVector2D::normalize(v40) * normeV;
+                  rocks.push_back(std::make_shared<Rock>(p40, v41, m));
 
                   // fPause = true
                 } else {

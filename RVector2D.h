@@ -9,8 +9,8 @@ public:
   RVector2D(float x = 0.0f, float y = 0.0f);
 
   float magnitude();
-  RVector2D normalize();
-  // static RVector2D normalize(RVector2D v);
+  void normalize();
+  static RVector2D normalize(RVector2D v);
   RVector2D normal();
 
   friend RVector2D operator+(RVector2D A, const RVector2D &B) { return A += B; }
@@ -33,8 +33,8 @@ public:
     return RVector2D(left * right.x, left * right.y);
   }
 
-  friend RVector2D operator*(const RVector2D &left, float right) {
-    return RVector2D(right * left.x, right * left.y);
+  friend RVector2D operator*(const RVector2D &left, float rhs) {
+    return RVector2D(left.x * rhs, left.y * rhs);
   }
 
   // Dot product
