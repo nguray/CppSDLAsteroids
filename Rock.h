@@ -16,7 +16,7 @@ public:
   Rock(RVector2D p, RVector2D v, float m);
   ~Rock();
 
-  void Draw(SDL_Renderer *renderer) override;
+  void Draw(SDL_Renderer* renderer) override;
   void UpdatePosition() override;
   void InitExplosion();
   void UpdateExplosion();
@@ -24,7 +24,7 @@ public:
   static void InitCosSinValues();
 
   int iExplode;
-
   std::vector<std::shared_ptr<RVector2D>> explVecs;
   std::vector<std::shared_ptr<RVector2D>> points;
+
 };

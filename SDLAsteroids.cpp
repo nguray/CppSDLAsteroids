@@ -60,18 +60,18 @@ void DoScreenFrameCollison(std::shared_ptr<GameObject> obj, SDL_Rect& scrRect)
   auto right = static_cast<float>(scrRect.x + scrRect.w) - obj->radius;
   auto bottom = static_cast<float>(scrRect.y + scrRect.h) - obj->radius;
 
-  if ((obj->pos.x <= left) || (obj->pos.x > right))
+  if ((obj->pos.x < left) || (obj->pos.x > right))
   {
     obj->velocity.x = -obj->velocity.x;
   }
 
-  if ((obj->pos.y <= top) || (obj->pos.y > bottom))
+  if ((obj->pos.y < top) || (obj->pos.y > bottom))
   {
     obj->velocity.y = -obj->velocity.y;
   }
 }
 
-void DoCollison(std::shared_ptr<GameObject> obj0,
+bool DoCollison(std::shared_ptr<GameObject> obj0,
   std::shared_ptr<GameObject> obj1)
 {
   //--------------------------------
@@ -122,7 +122,12 @@ void DoCollison(std::shared_ptr<GameObject> obj0,
     newVeloVec1 += v1;
     obj1->velocity = newVeloVec1;
 
+    return true;
+
   }
+
+  return false;
+
 }
 
 void FireBullet()
@@ -147,6 +152,10 @@ int RandomInt(int a, int b)
 void NewGame()
 {
   //--------------------------------
+
+  ship->pos = RVector2D(WIN_WIDTH / 2.0, WIN_HEIGHT / 2.0);
+  ship->shieldLevel = 3;
+
   for (auto i = 0; i < 5; ++i)
   {
     auto rock = std::make_shared<Rock>();
@@ -343,7 +352,7 @@ int main(int argc, char* argv[])
 
       Uint32 startTimeV = SDL_GetTicks();
       Uint32 startExplodeUpdate = SDL_GetTicks();
-      Uint32 startTimeR = startTimeV;
+      Uint32 startRegenerate = SDL_GetTicks();
 
       Rock::InitCosSinValues();
 
@@ -395,6 +404,9 @@ int main(int argc, char* argv[])
               break;
             case SDLK_RIGHT:
               iRotate = -1;
+              break;
+            case SDLK_PAUSE:
+              fPause ^= true;
               break;
             case SDLK_SPACE:
               FireBullet();
@@ -448,7 +460,7 @@ int main(int argc, char* argv[])
 
           DoScreenFrameCollison(ship, screenFrame);
 
-          // Check Hit
+          // Check Bullets Hit
           auto it = bullets.begin();
           while (it != bullets.end())
           {
@@ -475,7 +487,6 @@ int main(int argc, char* argv[])
                     rock->fDelete = true;
                     //-- SubDivide
                     SubDivideRock(rock, rock->mass / 3.0);
-
                     // fPause = true
                   }
                   else if (rock->mass == 1)
@@ -483,14 +494,12 @@ int main(int argc, char* argv[])
                     rock->fDelete = true;
                     //-- SubDivide
                     SubDivideRock(rock, rock->mass / 2.0);
-
                     // fPause = true
                   }
                   else
                   {
                     rock->iExplode = 1;
                     rock->InitExplosion();
-
                     //  fPause = true
                   }
                   break;
@@ -520,7 +529,10 @@ int main(int argc, char* argv[])
           {
             if ((!r->fDelete) && (r->iExplode == 0))
             {
-              DoCollison(ship, r);
+              if (DoCollison(ship, r)) {
+                ship->DecSheild();
+                startRegenerate = SDL_GetTicks();
+              }
             }
           }
 
@@ -559,6 +571,14 @@ int main(int argc, char* argv[])
               }
             }
           }
+
+          //--
+          if ((curTicks - startRegenerate) > 5000)
+          {
+            startRegenerate = curTicks;
+            ship->IncSheild();
+          }
+
         }
         else
         {
