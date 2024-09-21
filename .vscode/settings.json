@@ -2,12 +2,10 @@
     "files.associations": {
         "qwidget": "cpp"
     },
-    "C_Cpp.intelliSenseEngine": "disabled",
+    "C_Cpp.intelliSenseEngine": "default",
     "cmake.copyCompileCommands": "${workspaceFolder}/compile_commands.json",
-    "clangd.arguments": [
-        "-header-insertion=never"
-    ],
     "files.trimTrailingWhitespace": true,
     "editor.formatOnSave": true,
-    "editor.formatOnType": false
+    "editor.formatOnType": false,
+    "C_Cpp.formatting": "vcFormat"
 }
