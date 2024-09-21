@@ -62,7 +62,7 @@ void Ship::Accelerate(float d)
 
 void Ship::Draw(SDL_Renderer* renderer)
 {
-
+    //--
     int red = (255 - shieldLevel * 64);
     SDL_SetRenderDrawColor(renderer, red, 64, 64, 128);
     SDL_RenderDrawCircle(renderer, static_cast<int>(pos.x), static_cast<int>(pos.y), radius);

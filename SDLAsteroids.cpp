@@ -183,8 +183,9 @@ void NewGame()
       px = WIN_HEIGHT - ri - 1;
     }
 
-    auto ra = static_cast<double>(RandomInt(0, 360) * M_PI / 180.0);
     rock->pos = RVector2D{ px, py };
+
+    auto ra = static_cast<double>(RandomInt(0, 360) * M_PI / 180.0);
     rock->velocity = RVector2D{ static_cast<float>(1.35f * cos(ra)),
                                static_cast<float>(1.35f * sin(ra)) };
     rock->mass = m;
