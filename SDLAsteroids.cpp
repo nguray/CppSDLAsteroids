@@ -53,6 +53,9 @@ std::shared_ptr<Ship> ship{
 std::vector<std::shared_ptr<Bullet>> bullets;
 std::vector<std::shared_ptr<Rock>> rocks;
 
+Mix_Chunk* laserSound = NULL;
+Mix_Chunk* explosionSound = NULL;
+
 void DoScreenFrameCollison(std::shared_ptr<GameObject> obj, SDL_Rect& scrRect)
 {
   auto left = static_cast<float>(scrRect.x) + obj->radius;
@@ -140,6 +143,10 @@ void FireBullet()
   auto v = ship->DirectionVect();
   v.mul(5.0);
   bullets.push_back(std::make_shared<Bullet>(ship->pos, v));
+  if (laserSound != NULL) {
+    Mix_PlayChannel(-1, laserSound, 0);
+  }
+
 }
 
 int RandomInt(int a, int b)
@@ -327,11 +334,18 @@ int main(int argc, char* argv[])
 
       // Mix_Music *tetrisMusic = Mix_LoadMUS("../resources/Tetris.wav");
 
-      // Mix_Chunk *succesSound =
-      // Mix_LoadWAV("../resources/109662__grunz__success.wav"); if
-      // (succesSound!=NULL){
-      //     Mix_VolumeChunk(succesSound,15);
-      // }
+      filePath = resDir / "344276__nsstudios__laser3.wav";
+      laserSound = Mix_LoadWAV(filePath.c_str());
+      if (laserSound != NULL) {
+        Mix_VolumeChunk(laserSound, 15);
+      }
+
+      filePath = resDir / "asteroid-94614.mp3";
+      explosionSound = Mix_LoadWAV(filePath.c_str());
+      if (explosionSound != NULL) {
+        Mix_VolumeChunk(explosionSound, 15);
+      }
+
 
       // Get window surface
       // screenSurface = SDL_GetWindowSurface( window );
@@ -501,7 +515,11 @@ int main(int argc, char* argv[])
                   {
                     rock->iExplode = 1;
                     rock->InitExplosion();
+
                     //  fPause = true
+                  }
+                  if (explosionSound != NULL) {
+                    Mix_PlayChannel(-1, explosionSound, 0);
                   }
                   break;
                 }
@@ -634,6 +652,14 @@ int main(int argc, char* argv[])
         SDL_Delay(20);
 
         //std::cout << "nbBullets : " << bullets.size() << std::endl;
+      }
+
+      if (explosionSound) {
+        Mix_FreeChunk(explosionSound);
+      }
+
+      if (laserSound) {
+        Mix_FreeChunk(laserSound);
       }
 
       Mix_CloseAudio();
