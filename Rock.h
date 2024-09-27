@@ -26,5 +26,6 @@ public:
   int iExplode;
   std::vector<std::shared_ptr<RVector2D>> explVecs;
   std::vector<std::shared_ptr<RVector2D>> points;
+  SDL_Texture* curTex;
 
 };

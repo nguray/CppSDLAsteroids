@@ -1,32 +1,37 @@
 [
 {
   "directory": "/home/nguray/VcCppProjects/CppSDLAsteroids/build",
-  "command": "/usr/bin/g++ -DSDL2_SHARED -I/usr/include/SDL2 -g -o CMakeFiles/SDLAsteroids.dir/SDLAsteroids.cpp.o -c /home/nguray/VcCppProjects/CppSDLAsteroids/SDLAsteroids.cpp",
+  "command": "/usr/bin/g++ -DSDL2_SHARED -I/usr/include/SDL2 -g -std=gnu++20 -o CMakeFiles/SDLAsteroids.dir/SDLAsteroids.cpp.o -c /home/nguray/VcCppProjects/CppSDLAsteroids/SDLAsteroids.cpp",
   "file": "/home/nguray/VcCppProjects/CppSDLAsteroids/SDLAsteroids.cpp"
 },
 {
   "directory": "/home/nguray/VcCppProjects/CppSDLAsteroids/build",
-  "command": "/usr/bin/g++ -DSDL2_SHARED -I/usr/include/SDL2 -g -o CMakeFiles/SDLAsteroids.dir/GameObject.cpp.o -c /home/nguray/VcCppProjects/CppSDLAsteroids/GameObject.cpp",
+  "command": "/usr/bin/g++ -DSDL2_SHARED -I/usr/include/SDL2 -g -std=gnu++20 -o CMakeFiles/SDLAsteroids.dir/GameObject.cpp.o -c /home/nguray/VcCppProjects/CppSDLAsteroids/GameObject.cpp",
   "file": "/home/nguray/VcCppProjects/CppSDLAsteroids/GameObject.cpp"
 },
 {
   "directory": "/home/nguray/VcCppProjects/CppSDLAsteroids/build",
-  "command": "/usr/bin/g++ -DSDL2_SHARED -I/usr/include/SDL2 -g -o CMakeFiles/SDLAsteroids.dir/Ship.cpp.o -c /home/nguray/VcCppProjects/CppSDLAsteroids/Ship.cpp",
+  "command": "/usr/bin/g++ -DSDL2_SHARED -I/usr/include/SDL2 -g -std=gnu++20 -o CMakeFiles/SDLAsteroids.dir/Ship.cpp.o -c /home/nguray/VcCppProjects/CppSDLAsteroids/Ship.cpp",
   "file": "/home/nguray/VcCppProjects/CppSDLAsteroids/Ship.cpp"
 },
 {
   "directory": "/home/nguray/VcCppProjects/CppSDLAsteroids/build",
-  "command": "/usr/bin/g++ -DSDL2_SHARED -I/usr/include/SDL2 -g -o CMakeFiles/SDLAsteroids.dir/Rock.cpp.o -c /home/nguray/VcCppProjects/CppSDLAsteroids/Rock.cpp",
+  "command": "/usr/bin/g++ -DSDL2_SHARED -I/usr/include/SDL2 -g -std=gnu++20 -o CMakeFiles/SDLAsteroids.dir/Rock.cpp.o -c /home/nguray/VcCppProjects/CppSDLAsteroids/Rock.cpp",
   "file": "/home/nguray/VcCppProjects/CppSDLAsteroids/Rock.cpp"
 },
 {
   "directory": "/home/nguray/VcCppProjects/CppSDLAsteroids/build",
-  "command": "/usr/bin/g++ -DSDL2_SHARED -I/usr/include/SDL2 -g -o CMakeFiles/SDLAsteroids.dir/Bullet.cpp.o -c /home/nguray/VcCppProjects/CppSDLAsteroids/Bullet.cpp",
+  "command": "/usr/bin/g++ -DSDL2_SHARED -I/usr/include/SDL2 -g -std=gnu++20 -o CMakeFiles/SDLAsteroids.dir/Bullet.cpp.o -c /home/nguray/VcCppProjects/CppSDLAsteroids/Bullet.cpp",
   "file": "/home/nguray/VcCppProjects/CppSDLAsteroids/Bullet.cpp"
 },
 {
   "directory": "/home/nguray/VcCppProjects/CppSDLAsteroids/build",
-  "command": "/usr/bin/g++ -DSDL2_SHARED -I/usr/include/SDL2 -g -o CMakeFiles/SDLAsteroids.dir/RVector2D.cpp.o -c /home/nguray/VcCppProjects/CppSDLAsteroids/RVector2D.cpp",
+  "command": "/usr/bin/g++ -DSDL2_SHARED -I/usr/include/SDL2 -g -std=gnu++20 -o CMakeFiles/SDLAsteroids.dir/RVector2D.cpp.o -c /home/nguray/VcCppProjects/CppSDLAsteroids/RVector2D.cpp",
   "file": "/home/nguray/VcCppProjects/CppSDLAsteroids/RVector2D.cpp"
+},
+{
+  "directory": "/home/nguray/VcCppProjects/CppSDLAsteroids/build",
+  "command": "/usr/bin/g++ -DSDL2_SHARED -I/usr/include/SDL2 -g -std=gnu++20 -o CMakeFiles/SDLAsteroids.dir/RockFactory.cpp.o -c /home/nguray/VcCppProjects/CppSDLAsteroids/RockFactory.cpp",
+  "file": "/home/nguray/VcCppProjects/CppSDLAsteroids/RockFactory.cpp"
 }
 ]

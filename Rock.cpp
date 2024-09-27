@@ -4,9 +4,9 @@
 float Rock::sav_cos[] = {};
 float Rock::sav_sin[] = {};
 
-Rock::Rock() : GameObject(), iExplode(0) {}
+Rock::Rock() : GameObject(), iExplode(0), curTex(NULL) {}
 
-Rock::Rock(RVector2D p, RVector2D v, float m) : GameObject(), iExplode(0) {
+Rock::Rock(RVector2D p, RVector2D v, float m) : GameObject(), iExplode(0), curTex(NULL) {
   pos = p;
   velocity = v;
   mass = m;
@@ -17,18 +17,35 @@ Rock::~Rock() {}
 
 void Rock::UpdatePosition() { pos += velocity; }
 
-void Rock::Draw(SDL_Renderer *renderer) {
+void Rock::Draw(SDL_Renderer* renderer) {
   //--
   if (iExplode == 0) {
-    SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
-    SDL_RenderDrawCircle(renderer, static_cast<int>(pos.x),
-                         static_cast<int>(pos.y), radius);
-    auto p1 = pos;
-    auto v = velocity;
-    v.mul(10);
-    auto p2 = p1 + v;
-    SDL_RenderDrawLineF(renderer, p1.x, p1.y, p2.x, p2.y);
-  } else {
+
+    if (mass == 2) {
+
+      SDL_Rect srcRect = { 0,0, 64, 64 };
+      SDL_Rect desRect = { static_cast<int>(pos.x) - 31,static_cast<int>(pos.y - 31), 64, 64 };
+      SDL_RenderCopyEx(renderer, curTex, &srcRect, &desRect, direction + 90.0, NULL, SDL_RendererFlip::SDL_FLIP_NONE);
+
+      SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+      SDL_RenderDrawCircle(renderer, static_cast<int>(pos.x),
+        static_cast<int>(pos.y), radius);
+
+    }
+    else {
+      SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
+      SDL_RenderDrawCircle(renderer, static_cast<int>(pos.x),
+        static_cast<int>(pos.y), radius);
+      auto p1 = pos;
+      auto v = velocity;
+      v.mul(10);
+      auto p2 = p1 + v;
+      SDL_RenderDrawLineF(renderer, p1.x, p1.y, p2.x, p2.y);
+
+    }
+
+  }
+  else {
     SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
     for (int i = 0; i < NB_COSSINS; ++i) {
       auto p1 = *points[i];

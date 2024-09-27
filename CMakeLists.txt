@@ -9,6 +9,7 @@ cmake_minimum_required(VERSION 3.5)
                 Rock.cpp Rock.h
                 Bullet.cpp Bullet.h
                 RVector2D.cpp RVector2D.h
+                RockFactory.cpp RockFactory.h
 	)
 
     add_executable(SDLAsteroids ${PROJECT_SOURCES})
@@ -21,7 +22,7 @@ cmake_minimum_required(VERSION 3.5)
     include_directories(${SDL2_INCLUDE_DIRS})
 
 
-    target_compile_features(SDLAsteroids PUBLIC cxx_std_17)
+    target_compile_features(SDLAsteroids PUBLIC cxx_std_20)
 
     target_compile_definitions(SDLAsteroids PRIVATE SDL2_SHARED)
 

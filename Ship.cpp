@@ -25,7 +25,7 @@ shieldLevel(3)
     thrushUnit = RVector2D{ static_cast<float>(cos(ra)),static_cast<float>(sin(ra)) };
     velocity = thrushUnit * 0.1;
     mass = 2.0;
-    radius = (8.0 + static_cast<float>(shieldLevel) * 1.5) * mass;
+    radius = (8.0 + static_cast<float>(shieldLevel)) * mass;
 }
 
 Ship::~Ship() {
@@ -36,7 +36,7 @@ void Ship::DecSheild()
 {
     if (shieldLevel) {
         shieldLevel--;
-        radius = (8.0 + static_cast<float>(shieldLevel) * 1.5) * mass;
+        radius = (8.0 + static_cast<float>(shieldLevel)) * mass;
     }
 }
 
@@ -44,7 +44,7 @@ void Ship::IncSheild()
 {
     if (shieldLevel < 3) {
         shieldLevel++;
-        radius = (8.0 + static_cast<float>(shieldLevel) * 1.5) * mass;
+        radius = (8.0 + static_cast<float>(shieldLevel)) * mass;
     }
 }
 
@@ -65,7 +65,12 @@ void Ship::Draw(SDL_Renderer* renderer)
     //--
     int red = (255 - shieldLevel * 64);
     SDL_SetRenderDrawColor(renderer, red, 64, 64, 128);
-    SDL_RenderDrawCircle(renderer, static_cast<int>(pos.x), static_cast<int>(pos.y), radius);
+    auto r = radius - 3.0f;
+    for (int i = 0; i < (shieldLevel + 1); i++)
+    {
+        SDL_RenderDrawCircle(renderer, static_cast<int>(pos.x), static_cast<int>(pos.y), r);
+        r -= 1.0;
+    }
 
     SDL_Rect srcRect = { 0,0, 32, 32 };
     SDL_Rect desRect = { static_cast<int>(pos.x) - 15,static_cast<int>(pos.y - 15), 32, 32 };

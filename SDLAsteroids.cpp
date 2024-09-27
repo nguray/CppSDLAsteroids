@@ -20,7 +20,7 @@
 #include <sstream>
 #include <stdio.h>
 #include <string>
-#include <utility> // for std::move
+#include <utility> // for std::move::new((void*)__p) _Tp(std::forward<_Args>(__args)...);
 #include <vector>
 
 namespace fs = std::filesystem;
@@ -28,6 +28,8 @@ namespace fs = std::filesystem;
 #include "Bullet.h"
 #include "Rock.h"
 #include "Ship.h"
+#include "RockFactory.h"
+
 
 typedef struct HighScore
 {
@@ -56,8 +58,11 @@ std::vector<std::shared_ptr<Rock>> rocks;
 Mix_Chunk* laserSound = NULL;
 Mix_Chunk* explosionSound = NULL;
 
+RockFactory* rockFactory = new RockFactory();
+
 void DoScreenFrameCollison(std::shared_ptr<GameObject> obj, SDL_Rect& scrRect)
 {
+  //--------------------------------
   auto left = static_cast<float>(scrRect.x) + obj->radius;
   auto top = static_cast<float>(scrRect.y) + obj->radius;
   auto right = static_cast<float>(scrRect.x + scrRect.w) - obj->radius;
@@ -70,6 +75,8 @@ void DoScreenFrameCollison(std::shared_ptr<GameObject> obj, SDL_Rect& scrRect)
 
   if ((obj->pos.y < top) || (obj->pos.y > bottom))
   {
+    SDL_Surface* surface;
+
     obj->velocity.y = -obj->velocity.y;
   }
 }
@@ -165,7 +172,6 @@ void NewGame()
 
   for (auto i = 0; i < 5; ++i)
   {
-    auto rock = std::make_shared<Rock>();
 
     auto m = static_cast<float>(RandomInt(1, 2));
     auto ri = 10.0 * m;
@@ -190,15 +196,19 @@ void NewGame()
       px = WIN_HEIGHT - ri - 1;
     }
 
-    rock->pos = RVector2D{ px, py };
-
     auto ra = static_cast<double>(RandomInt(0, 360) * M_PI / 180.0);
-    rock->velocity = RVector2D{ static_cast<float>(1.35f * cos(ra)),
-                               static_cast<float>(1.35f * sin(ra)) };
-    rock->mass = m;
-    rock->radius = ri;
-    rocks.push_back(rock);
+
+    auto rock = rockFactory->NewRock(
+      RVector2D{ px, py },
+      RVector2D{ static_cast<float>(1.35f * cos(ra)),static_cast<float>(1.35f * sin(ra)) },
+      m,
+      "rocktex01");
+
+
+    rocks.push_back(std::shared_ptr<Rock>(rock));
+
   }
+
 }
 
 void SubDivideRock(std::shared_ptr<Rock> r, float m)
@@ -212,31 +222,33 @@ void SubDivideRock(std::shared_ptr<Rock> r, float m)
   auto v10 = uv + un;
   auto p10 = r->pos + (v10 * 10);
   auto v11 = RVector2D::normalize(v10) * normeV;
-  rocks.push_back(std::make_shared<Rock>(p10, v11, m));
+  rocks.push_back(std::shared_ptr<Rock>(rockFactory->NewRock(p10, v11, m, "rocktex01")));
   // Direction 1h30
   auto v20 = uv - un;
   auto p20 = r->pos + (v20 * 10);
   auto v21 = RVector2D::normalize(v20) * normeV;
-  rocks.push_back(std::make_shared<Rock>(p20, v21, m));
+  rocks.push_back(std::shared_ptr<Rock>(rockFactory->NewRock(p20, v21, m, "rocktex01")));
   // Direction 7h30
   auto v30 = uv - un;
   v30.mul(-1);
   auto p30 = r->pos + v30 * 10;
   auto v31 = RVector2D::normalize(v30) * normeV;
-  rocks.push_back(std::make_shared<Rock>(p30, v31, m));
+  rocks.push_back(std::shared_ptr<Rock>(rockFactory->NewRock(p30, v31, m, "rocktex01")));
   // Direction 4h30
   auto v40 = uv + un;
   v40.mul(-1);
   auto p40 = r->pos + v40 * 10;
   auto v41 = RVector2D::normalize(v40) * normeV;
-  rocks.push_back(std::make_shared<Rock>(p40, v41, m));
+  rocks.push_back(std::shared_ptr<Rock>(rockFactory->NewRock(p40, v41, m, "rocktex01")));
+
 }
+
 
 constexpr const char* resoucesDir{ "../resources" };
 
 int main(int argc, char* argv[])
 {
-  // std::cout << "Hello World !!" << SDL_GetError() << std::endl;
+  // std::cout << "HelrockSurfacelo World !!" << SDL_GetError() << std::endl;
   TTF_Font* gFont = NULL;
 
   // The window we'll be rendering to
@@ -245,11 +257,12 @@ int main(int argc, char* argv[])
   // The surface contained by the window
 
   SDL_Renderer* renderer = NULL;
+  SDL_Surface* surface;
 
   // std::cout << "Current working directory: " <<
   // std::filesystem::current_path() << std::endl;
 
-  // Initialize PNG loading
+  // Initialize PNG lorockSurfacRockFactory   rockFactory;eading
 
   auto initError = IMG_Init(IMG_INIT_PNG);
 
@@ -270,6 +283,7 @@ int main(int argc, char* argv[])
   // Open the font
   fs::path resDir;
   ;
+
   if (fs::exists("../resources"))
   {
     resDir = fs::path("../resources");
@@ -298,6 +312,7 @@ int main(int argc, char* argv[])
   else
   {
 
+
     //--
     filePath = resDir / "Plane00.png";
     std::cout << filePath.c_str() << std::endl;
@@ -313,6 +328,12 @@ int main(int argc, char* argv[])
     std::cout << filePath.c_str() << std::endl;
     // Load image at specified path
     SDL_Surface* shipdSurface2 = IMG_Load(filePath.c_str());
+
+    filePath = resDir / "rock01.png";
+    std::cout << filePath.c_str() << std::endl;
+    // Load image at specified path
+    SDL_Surface* rockSurface = IMG_Load(filePath.c_str());
+
 
     //--
     srand(time(NULL));
@@ -359,6 +380,11 @@ int main(int argc, char* argv[])
         SDL_CreateTextureFromSurface(renderer, shipdSurface1);
       SDL_Texture* shipTex2 =
         SDL_CreateTextureFromSurface(renderer, shipdSurface2);
+      SDL_Texture* rockTex =
+        SDL_CreateTextureFromSurface(renderer, rockSurface);
+
+      rockFactory->AddTexture("rocktex01", rockTex);
+
 
       ship->idleTex = shipTex0;
       ship->accelTex = shipTex1;
@@ -458,7 +484,7 @@ int main(int argc, char* argv[])
 
           if (iAccel > 0)
           {
-            ship->Accelerate(0.1);
+            ship->Accelerate(0.2);
             ship->SetForwardThrush();
           }
           else if (iAccel < 0)
@@ -652,18 +678,19 @@ int main(int argc, char* argv[])
         SDL_Delay(20);
 
         //std::cout << "nbBullets : " << bullets.size() << std::endl;
+
       }
 
+      //--
       if (explosionSound) {
         Mix_FreeChunk(explosionSound);
       }
-
       if (laserSound) {
         Mix_FreeChunk(laserSound);
       }
-
       Mix_CloseAudio();
 
+      //--
       SDL_DestroyTexture(shipTex0);
       SDL_DestroyTexture(shipTex1);
       SDL_DestroyTexture(shipTex2);
@@ -682,6 +709,7 @@ int main(int argc, char* argv[])
     SDL_FreeSurface(shipdSurface0);
     SDL_FreeSurface(shipdSurface1);
     SDL_FreeSurface(shipdSurface2);
+    SDL_FreeSurface(rockSurface);
 
     // Quit SDL subsystems
     SDL_Quit();
