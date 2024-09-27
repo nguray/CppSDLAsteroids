@@ -20,10 +20,12 @@ public:
   void UpdatePosition() override;
   void InitExplosion();
   void UpdateExplosion();
+  int  RandomInt(int a, int b);
 
   static void InitCosSinValues();
 
   int iExplode;
+  float rotateSpeed;
   std::vector<std::shared_ptr<RVector2D>> explVecs;
   std::vector<std::shared_ptr<RVector2D>> points;
   SDL_Texture* curTex;
