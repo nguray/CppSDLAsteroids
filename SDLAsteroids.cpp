@@ -198,12 +198,19 @@ void NewGame()
 
     auto ra = static_cast<double>(RandomInt(0, 360) * M_PI / 180.0);
 
+    std::string texName;
+    if (m == 2) {
+      texName = "rocktex00";
+    }
+    else {
+      texName = "rocktex10";
+    }
+
     auto rock = rockFactory->NewRock(
       RVector2D{ px, py },
       RVector2D{ static_cast<float>(1.35f * cos(ra)),static_cast<float>(1.35f * sin(ra)) },
       m,
-      "rocktex01");
-
+      texName);
 
     rocks.push_back(std::shared_ptr<Rock>(rock));
 
@@ -329,11 +336,15 @@ int main(int argc, char* argv[])
     // Load image at specified path
     SDL_Surface* shipdSurface2 = IMG_Load(filePath.c_str());
 
-    filePath = resDir / "rock01.png";
+    filePath = resDir / "rock00.png";
     std::cout << filePath.c_str() << std::endl;
     // Load image at specified path
-    SDL_Surface* rockSurface = IMG_Load(filePath.c_str());
+    SDL_Surface* rockSurface00 = IMG_Load(filePath.c_str());
 
+    filePath = resDir / "rock10.png";
+    std::cout << filePath.c_str() << std::endl;
+    // Load image at specified path
+    SDL_Surface* rockSurface10 = IMG_Load(filePath.c_str());
 
     //--
     srand(time(NULL));
@@ -380,10 +391,13 @@ int main(int argc, char* argv[])
         SDL_CreateTextureFromSurface(renderer, shipdSurface1);
       SDL_Texture* shipTex2 =
         SDL_CreateTextureFromSurface(renderer, shipdSurface2);
-      SDL_Texture* rockTex =
-        SDL_CreateTextureFromSurface(renderer, rockSurface);
+      SDL_Texture* rockTex00 =
+        SDL_CreateTextureFromSurface(renderer, rockSurface00);
+      SDL_Texture* rockTex10 =
+        SDL_CreateTextureFromSurface(renderer, rockSurface10);
 
-      rockFactory->AddTexture("rocktex01", rockTex);
+      rockFactory->AddTexture("rocktex00", rockTex00);
+      rockFactory->AddTexture("rocktex10", rockTex10);
 
 
       ship->idleTex = shipTex0;
@@ -709,7 +723,8 @@ int main(int argc, char* argv[])
     SDL_FreeSurface(shipdSurface0);
     SDL_FreeSurface(shipdSurface1);
     SDL_FreeSurface(shipdSurface2);
-    SDL_FreeSurface(rockSurface);
+    SDL_FreeSurface(rockSurface00);
+    SDL_FreeSurface(rockSurface10);
 
     // Quit SDL subsystems
     SDL_Quit();

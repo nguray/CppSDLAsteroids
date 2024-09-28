@@ -36,7 +36,7 @@ void Rock::Draw(SDL_Renderer* renderer) {
   //--
   if (iExplode == 0) {
 
-    if (mass == 2) {
+    if ((mass == 2) || (mass == 1)) {
 
       SDL_Rect srcRect = { 0,0, 64, 64 };
       SDL_Rect desRect = { static_cast<int>(pos.x) - 31,static_cast<int>(pos.y - 31), 64, 64 };

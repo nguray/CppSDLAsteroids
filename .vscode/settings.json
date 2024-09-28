@@ -57,7 +57,6 @@
         "cinttypes": "cpp",
         "typeinfo": "cpp"
     },
-    "C_Cpp.intelliSenseEngine": "default",
     "cmake.copyCompileCommands": "${workspaceFolder}/compile_commands.json",
     "files.trimTrailingWhitespace": true,
     "editor.formatOnSave": true,
