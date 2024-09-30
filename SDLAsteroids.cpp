@@ -69,16 +69,21 @@ void DoScreenFrameCollison(std::shared_ptr<GameObject> obj, SDL_Rect& scrRect)
   auto right = static_cast<float>(scrRect.x + scrRect.w) - obj->radius;
   auto bottom = static_cast<float>(scrRect.y + scrRect.h) - obj->radius;
 
-  if ((obj->pos.x < left) || (obj->pos.x > right))
+  if (obj->pos.x < left)
   {
-    obj->velocity.x = -obj->velocity.x;
+    obj->velocity.x = fabs(obj->velocity.x);
+  }
+  else if (obj->pos.x > right) {
+    obj->velocity.x = -fabs(obj->velocity.x);
   }
 
-  if ((obj->pos.y < top) || (obj->pos.y > bottom))
+  if (obj->pos.y < top)
   {
-    SDL_Surface* surface;
-
-    obj->velocity.y = -obj->velocity.y;
+    obj->velocity.y = fabs(obj->velocity.y);
+  }
+  else if (obj->pos.y > bottom)
+  {
+    obj->velocity.y = -fabs(obj->velocity.y);
   }
 }
 
@@ -234,7 +239,6 @@ void SubDivideRock(std::shared_ptr<Rock> r, float m)
   else {
     iTexture = 3;
   }
-
 
   // Direction 10h30
   auto v10 = uv + un;
@@ -398,7 +402,6 @@ int main(int argc, char* argv[])
 
       rockFactory->AddTexture("rock00.png");
       rockFactory->AddTexture("rock10.png");
-      rockFactory->AddTexture("rock20.png");
 
       rockFactory->AddTexture("rock20.png");
       rockFactory->AddTexture("rock21.png");

@@ -32,7 +32,7 @@ Rock* RockFactory::NewRock(RVector2D pos, RVector2D v, float m, std::string text
 void RockFactory::AddTexture(std::string textureFileName)
 {
     auto filePath = resourcesDir / std::filesystem::path(textureFileName);
-    std::cout << filePath.c_str() << std::endl;
+    //std::cout << filePath.c_str() << std::endl;
     // Load image at specified path
     SDL_Surface* surface = IMG_Load(filePath.c_str());
 
