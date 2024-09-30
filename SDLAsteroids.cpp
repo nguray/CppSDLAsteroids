@@ -22,6 +22,7 @@
 #include <string>
 #include <utility> // for std::move::new((void*)__p) _Tp(std::forward<_Args>(__args)...);
 #include <vector>
+#include <fmt/core.h>
 
 namespace fs = std::filesystem;
 
@@ -221,32 +222,46 @@ void NewGame()
 void SubDivideRock(std::shared_ptr<Rock> r, float m)
 {
   //--
+  std::string textureName;
   auto uv = RVector2D::normalize(r->velocity);
   auto un = uv.normal();
   auto normeV = r->velocity.magnitude() * 1.7f;
+
+  int iTexture;
+  if (m > 0.6f) {
+    iTexture = 2;
+  }
+  else {
+    iTexture = 3;
+  }
+
 
   // Direction 10h30
   auto v10 = uv + un;
   auto p10 = r->pos + (v10 * 10);
   auto v11 = RVector2D::normalize(v10) * normeV;
-  rocks.push_back(std::shared_ptr<Rock>(rockFactory->NewRock(p10, v11, m, "rock20.png")));
+  textureName = fmt::format("rock{}0.png", iTexture);
+  rocks.push_back(std::shared_ptr<Rock>(rockFactory->NewRock(p10, v11, m, textureName)));
   // Direction 1h30
   auto v20 = uv - un;
   auto p20 = r->pos + (v20 * 10);
   auto v21 = RVector2D::normalize(v20) * normeV;
-  rocks.push_back(std::shared_ptr<Rock>(rockFactory->NewRock(p20, v21, m, "rock21.png")));
+  textureName = fmt::format("rock{}1.png", iTexture);
+  rocks.push_back(std::shared_ptr<Rock>(rockFactory->NewRock(p20, v21, m, textureName)));
   // Direction 7h30
   auto v30 = uv - un;
   v30.mul(-1);
   auto p30 = r->pos + v30 * 10;
   auto v31 = RVector2D::normalize(v30) * normeV;
-  rocks.push_back(std::shared_ptr<Rock>(rockFactory->NewRock(p30, v31, m, "rock22.png")));
+  textureName = fmt::format("rock{}2.png", iTexture);
+  rocks.push_back(std::shared_ptr<Rock>(rockFactory->NewRock(p30, v31, m, textureName)));
   // Direction 4h30
   auto v40 = uv + un;
   v40.mul(-1);
   auto p40 = r->pos + v40 * 10;
   auto v41 = RVector2D::normalize(v40) * normeV;
-  rocks.push_back(std::shared_ptr<Rock>(rockFactory->NewRock(p40, v41, m, "rock23.png")));
+  textureName = fmt::format("rock{}3.png", iTexture);
+  rocks.push_back(std::shared_ptr<Rock>(rockFactory->NewRock(p40, v41, m, textureName)));
 
 }
 
@@ -679,9 +694,7 @@ int main(int argc, char* argv[])
           NewGame();
           bullets.clear();
           fPause = true;
-          while (SDL_PollEvent(&e) != 0)
-          {
-          }
+          while (SDL_PollEvent(&e) != 0) {}
           SDL_Delay(500);
         }
 

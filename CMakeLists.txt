@@ -25,4 +25,4 @@ cmake_minimum_required(VERSION 3.5)
 
     target_compile_definitions(SDLAsteroids PRIVATE SDL2_SHARED)
 
-    target_link_libraries(SDLAsteroids SDL2 SDL2main SDL2_ttf SDL2_mixer SDL2_image)
+    target_link_libraries(SDLAsteroids SDL2 SDL2main SDL2_ttf SDL2_mixer SDL2_image fmt)
