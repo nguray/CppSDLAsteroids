@@ -2,21 +2,24 @@
 #include "SDL.h"
 #include <vector>
 #include "Rock.h"
+#include "RTexture.h"
 #include <unordered_map>
+#include <filesystem>
 
 class RockFactory {
-
+    std::string resourcesDir;
+    SDL_Renderer* renderer;
 public:
-    RockFactory();
+    RockFactory(SDL_Renderer* renderer, std::filesystem::path resourcesDir);
     ~RockFactory();
 
     Rock* NewRock(RVector2D pos, RVector2D v, float m, std::string textureName);
 
-    void AddTexture(std::string textureName, SDL_Texture* texture);
+    void AddTexture(std::string textureFileName);
 
-    SDL_Texture* GetTexture(std::string textureName);
+    RTexture* GetTexture(std::string textureName);
 
 private:
-    std::unordered_map<std::string, SDL_Texture*> textures;
+    std::unordered_map<std::string, RTexture*> textures;
 
 };

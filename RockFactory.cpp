@@ -5,14 +5,14 @@
 #include <SDL_image.h>
 
 
-RockFactory::RockFactory()
+RockFactory::RockFactory(SDL_Renderer* renderer, std::filesystem::path resourcesDir) : renderer(renderer), resourcesDir(resourcesDir)
 {
 }
 
 RockFactory::~RockFactory()
 {
     for (auto& [filename, texture] : textures) {
-        SDL_DestroyTexture(texture);
+        delete texture;
     }
 }
 
@@ -23,17 +23,29 @@ Rock* RockFactory::NewRock(RVector2D pos, RVector2D v, float m, std::string text
     if (it != textures.end()) {
         r->curTex = it->second;
     }
+    else {
+        r->curTex = NULL;
+    }
     return r;
 }
 
-void RockFactory::AddTexture(std::string textureName, SDL_Texture* texture)
+void RockFactory::AddTexture(std::string textureFileName)
 {
-    std::pair<std::string, SDL_Texture*> pair3 = std::make_pair(textureName, texture);
+    auto filePath = resourcesDir / std::filesystem::path(textureFileName);
+    std::cout << filePath.c_str() << std::endl;
+    // Load image at specified path
+    SDL_Surface* surface = IMG_Load(filePath.c_str());
+
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+    std::pair<std::string, RTexture*> pair3 = std::make_pair(textureFileName, new RTexture(texture));
     textures.insert(pair3);
+
+    SDL_FreeSurface(surface);
+
 
 }
 
-SDL_Texture* RockFactory::GetTexture(std::string textureName)
+RTexture* RockFactory::GetTexture(std::string textureName)
 {
     auto it = textures.find(textureName);
     if (it != textures.end()) {

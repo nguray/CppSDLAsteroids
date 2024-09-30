@@ -58,7 +58,7 @@ std::vector<std::shared_ptr<Rock>> rocks;
 Mix_Chunk* laserSound = NULL;
 Mix_Chunk* explosionSound = NULL;
 
-RockFactory* rockFactory = new RockFactory();
+RockFactory* rockFactory = nullptr;
 
 void DoScreenFrameCollison(std::shared_ptr<GameObject> obj, SDL_Rect& scrRect)
 {
@@ -200,10 +200,10 @@ void NewGame()
 
     std::string texName;
     if (m == 2) {
-      texName = "rocktex00";
+      texName = "rock00.png";
     }
     else {
-      texName = "rocktex10";
+      texName = "rock10.png";
     }
 
     auto rock = rockFactory->NewRock(
@@ -229,24 +229,24 @@ void SubDivideRock(std::shared_ptr<Rock> r, float m)
   auto v10 = uv + un;
   auto p10 = r->pos + (v10 * 10);
   auto v11 = RVector2D::normalize(v10) * normeV;
-  rocks.push_back(std::shared_ptr<Rock>(rockFactory->NewRock(p10, v11, m, "rocktex01")));
+  rocks.push_back(std::shared_ptr<Rock>(rockFactory->NewRock(p10, v11, m, "rock20.png")));
   // Direction 1h30
   auto v20 = uv - un;
   auto p20 = r->pos + (v20 * 10);
   auto v21 = RVector2D::normalize(v20) * normeV;
-  rocks.push_back(std::shared_ptr<Rock>(rockFactory->NewRock(p20, v21, m, "rocktex01")));
+  rocks.push_back(std::shared_ptr<Rock>(rockFactory->NewRock(p20, v21, m, "rock21.png")));
   // Direction 7h30
   auto v30 = uv - un;
   v30.mul(-1);
   auto p30 = r->pos + v30 * 10;
   auto v31 = RVector2D::normalize(v30) * normeV;
-  rocks.push_back(std::shared_ptr<Rock>(rockFactory->NewRock(p30, v31, m, "rocktex01")));
+  rocks.push_back(std::shared_ptr<Rock>(rockFactory->NewRock(p30, v31, m, "rock22.png")));
   // Direction 4h30
   auto v40 = uv + un;
   v40.mul(-1);
   auto p40 = r->pos + v40 * 10;
   auto v41 = RVector2D::normalize(v40) * normeV;
-  rocks.push_back(std::shared_ptr<Rock>(rockFactory->NewRock(p40, v41, m, "rocktex01")));
+  rocks.push_back(std::shared_ptr<Rock>(rockFactory->NewRock(p40, v41, m, "rock23.png")));
 
 }
 
@@ -336,16 +336,6 @@ int main(int argc, char* argv[])
     // Load image at specified path
     SDL_Surface* shipdSurface2 = IMG_Load(filePath.c_str());
 
-    filePath = resDir / "rock00.png";
-    std::cout << filePath.c_str() << std::endl;
-    // Load image at specified path
-    SDL_Surface* rockSurface00 = IMG_Load(filePath.c_str());
-
-    filePath = resDir / "rock10.png";
-    std::cout << filePath.c_str() << std::endl;
-    // Load image at specified path
-    SDL_Surface* rockSurface10 = IMG_Load(filePath.c_str());
-
     //--
     srand(time(NULL));
 
@@ -385,19 +375,25 @@ int main(int argc, char* argv[])
       renderer = SDL_CreateRenderer(
         window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-      SDL_Texture* shipTex0 =
-        SDL_CreateTextureFromSurface(renderer, shipdSurface0);
-      SDL_Texture* shipTex1 =
-        SDL_CreateTextureFromSurface(renderer, shipdSurface1);
-      SDL_Texture* shipTex2 =
-        SDL_CreateTextureFromSurface(renderer, shipdSurface2);
-      SDL_Texture* rockTex00 =
-        SDL_CreateTextureFromSurface(renderer, rockSurface00);
-      SDL_Texture* rockTex10 =
-        SDL_CreateTextureFromSurface(renderer, rockSurface10);
+      SDL_Texture* shipTex0 = SDL_CreateTextureFromSurface(renderer, shipdSurface0);
+      SDL_Texture* shipTex1 = SDL_CreateTextureFromSurface(renderer, shipdSurface1);
+      SDL_Texture* shipTex2 = SDL_CreateTextureFromSurface(renderer, shipdSurface2);
 
-      rockFactory->AddTexture("rocktex00", rockTex00);
-      rockFactory->AddTexture("rocktex10", rockTex10);
+      rockFactory = new RockFactory(renderer, resDir);
+
+      rockFactory->AddTexture("rock00.png");
+      rockFactory->AddTexture("rock10.png");
+      rockFactory->AddTexture("rock20.png");
+
+      rockFactory->AddTexture("rock20.png");
+      rockFactory->AddTexture("rock21.png");
+      rockFactory->AddTexture("rock22.png");
+      rockFactory->AddTexture("rock23.png");
+
+      rockFactory->AddTexture("rock30.png");
+      rockFactory->AddTexture("rock31.png");
+      rockFactory->AddTexture("rock32.png");
+      rockFactory->AddTexture("rock33.png");
 
 
       ship->idleTex = shipTex0;
@@ -723,8 +719,10 @@ int main(int argc, char* argv[])
     SDL_FreeSurface(shipdSurface0);
     SDL_FreeSurface(shipdSurface1);
     SDL_FreeSurface(shipdSurface2);
-    SDL_FreeSurface(rockSurface00);
-    SDL_FreeSurface(rockSurface10);
+
+    //--
+    if (rockFactory) delete rockFactory;
+
 
     // Quit SDL subsystems
     SDL_Quit();

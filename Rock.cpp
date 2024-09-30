@@ -18,7 +18,12 @@ Rock::Rock(RVector2D p, RVector2D v, float m) : GameObject(), iExplode(0), curTe
   velocity = v;
   mass = m;
   radius = 10.0 * m;
-  rotateSpeed = static_cast<float>(RandomInt(1, 9)) / 10.0f;
+  if (m == 2) {
+    rotateSpeed = static_cast<float>(RandomInt(1, 9)) / 10.0f;
+  }
+  else {
+    rotateSpeed = static_cast<float>(RandomInt(10, 19)) / 10.0f;
+  }
   auto i = RandomInt(1, 2);
   if (i == 2) {
     rotateSpeed = -rotateSpeed;
@@ -36,11 +41,10 @@ void Rock::Draw(SDL_Renderer* renderer) {
   //--
   if (iExplode == 0) {
 
-    if ((mass == 2) || (mass == 1)) {
+    if (curTex != nullptr) {
 
-      SDL_Rect srcRect = { 0,0, 64, 64 };
-      SDL_Rect desRect = { static_cast<int>(pos.x) - 31,static_cast<int>(pos.y - 31), 64, 64 };
-      SDL_RenderCopyEx(renderer, curTex, &srcRect, &desRect, direction, NULL, SDL_RendererFlip::SDL_FLIP_NONE);
+      SDL_Rect desRect = { static_cast<int>(pos.x - curTex->width / 2 - 1),static_cast<int>(pos.y - curTex->height / 2 - 1), 64, 64 };
+      SDL_RenderCopyEx(renderer, curTex->texture, nullptr, &desRect, direction, NULL, SDL_RendererFlip::SDL_FLIP_NONE);
 
       // SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
       // SDL_RenderDrawCircle(renderer, static_cast<int>(pos.x),

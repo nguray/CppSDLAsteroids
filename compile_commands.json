@@ -31,6 +31,11 @@
 },
 {
   "directory": "/home/nguray/VcCppProjects/CppSDLAsteroids/build",
+  "command": "/usr/bin/g++ -DSDL2_SHARED -I/usr/include/SDL2 -g -std=gnu++20 -o CMakeFiles/SDLAsteroids.dir/RTexture.cpp.o -c /home/nguray/VcCppProjects/CppSDLAsteroids/RTexture.cpp",
+  "file": "/home/nguray/VcCppProjects/CppSDLAsteroids/RTexture.cpp"
+},
+{
+  "directory": "/home/nguray/VcCppProjects/CppSDLAsteroids/build",
   "command": "/usr/bin/g++ -DSDL2_SHARED -I/usr/include/SDL2 -g -std=gnu++20 -o CMakeFiles/SDLAsteroids.dir/RockFactory.cpp.o -c /home/nguray/VcCppProjects/CppSDLAsteroids/RockFactory.cpp",
   "file": "/home/nguray/VcCppProjects/CppSDLAsteroids/RockFactory.cpp"
 }
