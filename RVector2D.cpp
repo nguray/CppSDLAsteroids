@@ -1,3 +1,7 @@
+/*---------------------------------------------------------------------------*\
+
+
+\*---------------------------------------------------------------------------*/
 
 #include "RVector2D.h"
 
@@ -27,12 +31,12 @@ RVector2D RVector2D::normalize(RVector2D v) {
 RVector2D RVector2D::normal() { return RVector2D(y, -x); }
 
 // Distance
-float RVector2D::distance(const RVector2D &a, const RVector2D &b) {
+float RVector2D::distance(const RVector2D& a, const RVector2D& b) {
   auto v = a - b;
   return v.magnitude();
 }
 
-float RVector2D::distance(const RVector2D &a) {
+float RVector2D::distance(const RVector2D& a) {
   auto v = *this - a;
   return v.magnitude();
 }

@@ -13,6 +13,9 @@ public:
     RockFactory(SDL_Renderer* renderer, std::filesystem::path resourcesDir);
     ~RockFactory();
 
+    int RandomInt(int a, int b);
+
+    Rock* NewRock();
     Rock* NewRock(RVector2D pos, RVector2D v, float m, std::string textureName);
 
     void AddTexture(std::string textureFileName);

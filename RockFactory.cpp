@@ -1,3 +1,7 @@
+/*---------------------------------------------------------------------------*\
+
+
+\*---------------------------------------------------------------------------*/
 
 #include "RockFactory.h"
 #include <string>
@@ -7,6 +11,7 @@
 
 RockFactory::RockFactory(SDL_Renderer* renderer, std::filesystem::path resourcesDir) : renderer(renderer), resourcesDir(resourcesDir)
 {
+
 }
 
 RockFactory::~RockFactory()
@@ -15,6 +20,14 @@ RockFactory::~RockFactory()
         delete texture;
     }
 }
+
+int RockFactory::RandomInt(int a, int b)
+{
+    int diff = b - a + 1;
+    int r = rand() % diff;
+    return a + r;
+}
+
 
 Rock* RockFactory::NewRock(RVector2D pos, RVector2D v, float m, std::string textureName)
 {
@@ -27,6 +40,44 @@ Rock* RockFactory::NewRock(RVector2D pos, RVector2D v, float m, std::string text
         r->curTex = NULL;
     }
     return r;
+}
+
+Rock* RockFactory::NewRock()
+{
+
+    int winWidth, winHeight;
+    SDL_Window* window = SDL_RenderGetWindow(renderer);
+    SDL_GetWindowSizeInPixels(window, &winWidth, &winHeight);
+
+    auto m = static_cast<float>(RandomInt(1, 2));
+    auto ri = 10.0 * m;
+
+    auto px = static_cast<float>(RandomInt(0, winWidth));
+    auto py = static_cast<float>(RandomInt(0, winHeight));
+
+    auto ra = static_cast<double>(RandomInt(0, 360) * M_PI / 180.0);
+
+    std::string texName;
+    if (m == 2) {
+        texName = "rock00.png";
+    }
+    else {
+        texName = "rock10.png";
+    }
+
+    auto r = new Rock(
+        RVector2D{ px,py },
+        RVector2D{ static_cast<float>(1.35f * cos(ra)),static_cast<float>(1.35f * sin(ra)) },
+        m);
+    auto it = textures.find(texName);
+    if (it != textures.end()) {
+        r->curTex = it->second;
+    }
+    else {
+        r->curTex = NULL;
+    }
+    return r;
+
 }
 
 void RockFactory::AddTexture(std::string textureFileName)

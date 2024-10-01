@@ -1,7 +1,7 @@
 /*-------------------------------------------------------------------------*\
                         Simple Asteroids using SDL2
 
-    Raymond NGUYEN THANH                                    20024-09- 18
+    Raymond NGUYEN THANH                                    20024-09-18
 \*-------------------------------------------------------------------------*/
 
 #include <SDL.h>
@@ -69,16 +69,14 @@ void DoScreenFrameCollison(std::shared_ptr<GameObject> obj, SDL_Rect& scrRect)
   auto right = static_cast<float>(scrRect.x + scrRect.w) - obj->radius;
   auto bottom = static_cast<float>(scrRect.y + scrRect.h) - obj->radius;
 
-  if (obj->pos.x < left)
-  {
+  if (obj->pos.x < left) {
     obj->velocity.x = fabs(obj->velocity.x);
   }
   else if (obj->pos.x > right) {
     obj->velocity.x = -fabs(obj->velocity.x);
   }
 
-  if (obj->pos.y < top)
-  {
+  if (obj->pos.y < top) {
     obj->velocity.y = fabs(obj->velocity.y);
   }
   else if (obj->pos.y > bottom)
@@ -129,6 +127,7 @@ bool DoCollison(std::shared_ptr<GameObject> obj0,
     newVeloVec0.mul(tV1);
     newVeloVec0 += v0;
     obj0->velocity = newVeloVec0;
+    Rock* NewRock(RVector2D pos, RVector2D v, float m, std::string textureName);
 
     //--
     auto v1 = unV12;
@@ -178,48 +177,7 @@ void NewGame()
 
   for (auto i = 0; i < 5; ++i)
   {
-
-    auto m = static_cast<float>(RandomInt(1, 2));
-    auto ri = 10.0 * m;
-
-    auto px = static_cast<float>(RandomInt(0, WIN_WIDTH));
-    if (px < ri)
-    {
-      px = ri + 1;
-    }
-    else if (px > (WIN_WIDTH - ri))
-    {
-      px = WIN_WIDTH - ri - 1;
-    }
-
-    auto py = static_cast<float>(RandomInt(0, WIN_HEIGHT));
-    if (py < ri)
-    {
-      py = ri + 1;
-    }
-    else if (py > (WIN_HEIGHT - ri))
-    {
-      px = WIN_HEIGHT - ri - 1;
-    }
-
-    auto ra = static_cast<double>(RandomInt(0, 360) * M_PI / 180.0);
-
-    std::string texName;
-    if (m == 2) {
-      texName = "rock00.png";
-    }
-    else {
-      texName = "rock10.png";
-    }
-
-    auto rock = rockFactory->NewRock(
-      RVector2D{ px, py },
-      RVector2D{ static_cast<float>(1.35f * cos(ra)),static_cast<float>(1.35f * sin(ra)) },
-      m,
-      texName);
-
-    rocks.push_back(std::shared_ptr<Rock>(rock));
-
+    rocks.push_back(std::shared_ptr<Rock>(rockFactory->NewRock()));
   }
 
 }
