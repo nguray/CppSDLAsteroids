@@ -78,9 +78,8 @@ void Ship::Draw(SDL_Renderer* renderer)
     //     r -= 1.0;
     // }
 
-    SDL_Rect srcRect = { 0,0, 32, 32 };
     SDL_Rect desRect = { static_cast<int>(pos.x) - 15,static_cast<int>(pos.y - 15), 32, 32 };
-    SDL_RenderCopyEx(renderer, curTex, &srcRect, &desRect, direction + 90.0, NULL, SDL_RendererFlip::SDL_FLIP_NONE);
+    SDL_RenderCopyEx(renderer, curTex, nullptr, &desRect, direction + 90.0, NULL, SDL_RendererFlip::SDL_FLIP_NONE);
 
 }
 

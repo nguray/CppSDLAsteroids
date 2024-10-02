@@ -56,10 +56,10 @@ std::shared_ptr<Ship> ship{
 std::vector<std::shared_ptr<Bullet>> bullets;
 std::vector<std::shared_ptr<Rock>> rocks;
 
-Mix_Chunk* laserSound = NULL;
-Mix_Chunk* explosionSound = NULL;
+Mix_Chunk* laserSound = nullptr;
+Mix_Chunk* explosionSound = nullptr;
 
-RockFactory* rockFactory = nullptr;
+std::unique_ptr<RockFactory> rockFactory;
 
 void DoScreenFrameCollison(std::shared_ptr<GameObject> obj, SDL_Rect& scrRect)
 {
@@ -87,7 +87,8 @@ void DoScreenFrameCollison(std::shared_ptr<GameObject> obj, SDL_Rect& scrRect)
 
 bool DoCollison(std::shared_ptr<GameObject> obj0,
   std::shared_ptr<GameObject> obj1)
-{
+{        //SDL_Rect rect = { 0, 0, WIN_WIDTH, WIN_HEIGHT };
+
   //--------------------------------
   auto p0 = obj0->pos;
   auto p1 = obj1->pos;
@@ -114,6 +115,7 @@ bool DoCollison(std::shared_ptr<GameObject> obj0,
     auto tV1 = veloVec0.dot(utV12);
     auto nV2 = veloVec1.dot(unV12);
     auto tV2 = veloVec1.dot(utV12);
+    //SDL_Rect rect = { 0, 0, WIN_WIDTH, WIN_HEIGHT };
 
     auto sumMass = m0 + m1;
 
@@ -153,11 +155,12 @@ void FireBullet()
     fPause = false;
   }
   auto v = ship->DirectionVect();
-  v.mul(5.0);
+  v.mul(8.0);
   bullets.push_back(std::make_shared<Bullet>(ship->pos, v));
   if (laserSound != NULL) {
     Mix_PlayChannel(-1, laserSound, 0);
-  }
+  }        //SDL_Rect rect = { 0, 0, WIN_WIDTH, WIN_HEIGHT };
+
 
 }
 
@@ -171,7 +174,6 @@ int RandomInt(int a, int b)
 void NewGame()
 {
   //--------------------------------
-
   ship->pos = RVector2D(WIN_WIDTH / 2.0, WIN_HEIGHT / 2.0);
   ship->shieldLevel = 3;
 
@@ -184,7 +186,7 @@ void NewGame()
 
 void SubDivideRock(std::shared_ptr<Rock> r, float m)
 {
-  //--
+  //--------------------------------
   std::string textureName;
   auto uv = RVector2D::normalize(r->velocity);
   auto un = uv.normal();
@@ -266,22 +268,17 @@ int main(int argc, char* argv[])
 
   // Open the font
   fs::path resDir;
-  ;
-
-  if (fs::exists("../resources"))
-  {
+  if (fs::exists("../resources")) {
     resDir = fs::path("../resources");
   }
-  else
-  {
+  else {
     resDir = fs::path("./resources");
   }
 
   auto filePath = resDir / "sansation.ttf";
   gFont = TTF_OpenFont(filePath.c_str(), 18);
   // gFont = TTF_OpenFont( "../resources/sansation.ttf", 18 );
-  if (gFont == NULL)
-  {
+  if (gFont == NULL) {
     printf("Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError());
     TTF_Quit();
     return 0;
@@ -289,13 +286,10 @@ int main(int argc, char* argv[])
   TTF_SetFontStyle(gFont, TTF_STYLE_ITALIC | TTF_STYLE_BOLD);
 
   // Initialize SDL
-  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
-  {
+  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
     printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
   }
-  else
-  {
-
+  else {
 
     //--
     filePath = resDir / "Plane00.png";
@@ -322,12 +316,10 @@ int main(int argc, char* argv[])
     window = SDL_CreateWindow("C++ SDL Asteroids", SDL_WINDOWPOS_UNDEFINED,
       SDL_WINDOWPOS_UNDEFINED, WIN_WIDTH, WIN_HEIGHT,
       SDL_WINDOW_SHOWN);
-    if (window == NULL)
-    {
+    if (window == NULL) {
       printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
     }
-    else
-    {
+    else {
 
       Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024);
 
@@ -345,7 +337,6 @@ int main(int argc, char* argv[])
         Mix_VolumeChunk(explosionSound, 15);
       }
 
-
       // Get window surface
       // screenSurface = SDL_GetWindowSurface( window );
 
@@ -356,20 +347,7 @@ int main(int argc, char* argv[])
       SDL_Texture* shipTex1 = SDL_CreateTextureFromSurface(renderer, shipdSurface1);
       SDL_Texture* shipTex2 = SDL_CreateTextureFromSurface(renderer, shipdSurface2);
 
-      rockFactory = new RockFactory(renderer, resDir);
-
-      rockFactory->AddTexture("rock00.png");
-      rockFactory->AddTexture("rock10.png");
-
-      rockFactory->AddTexture("rock20.png");
-      rockFactory->AddTexture("rock21.png");
-      rockFactory->AddTexture("rock22.png");
-      rockFactory->AddTexture("rock23.png");
-
-      rockFactory->AddTexture("rock30.png");
-      rockFactory->AddTexture("rock31.png");
-      rockFactory->AddTexture("rock32.png");
-      rockFactory->AddTexture("rock33.png");
+      rockFactory = std::make_unique<RockFactory>(renderer, resDir);
 
 
       ship->idleTex = shipTex0;
@@ -405,7 +383,9 @@ int main(int argc, char* argv[])
         SDL_SetRenderDrawColor(renderer, 16, 16, 64, 64);
         SDL_RenderClear(renderer);
 
-        // Handle events on queue
+        //
+        SDL_Event e;
+
         while (SDL_PollEvent(&e) != 0)
         {
           //
@@ -431,7 +411,8 @@ int main(int argc, char* argv[])
               break;
             case SDLK_RIGHT:
               iRotate = -1;
-              break;
+              break;        //SDL_Rect rect = { 0, 0, WIN_WIDTH, WIN_HEIGHT };
+
             case SDLK_PAUSE:
               fPause ^= true;
               break;
@@ -444,6 +425,7 @@ int main(int argc, char* argv[])
           {
             switch (e.key.keysym.sym)
             {
+
             case SDLK_UP:
             case SDLK_DOWN:
               iAccel = 0;
@@ -456,30 +438,24 @@ int main(int argc, char* argv[])
           }
         }
 
-        if (iRotate < 0)
-        {
+        if (iRotate < 0) {
           ship->OffsetAngle(2);
         }
-        else if (iRotate > 0)
-        {
+        else if (iRotate > 0) {
           ship->OffsetAngle(-2);
         }
 
-        if (!fPause)
-        {
+        if (!fPause) {
 
-          if (iAccel > 0)
-          {
+          if (iAccel > 0) {
             ship->Accelerate(0.2);
             ship->SetForwardThrush();
           }
-          else if (iAccel < 0)
-          {
+          else if (iAccel < 0) {
             ship->Accelerate(-0.1);
             ship->SetBackwardThrush();
           }
-          else
-          {
+          else {
             ship->SetIdleThrush();
           }
 
@@ -489,42 +465,35 @@ int main(int argc, char* argv[])
 
           // Check Bullets Hit
           auto it = bullets.begin();
-          while (it != bullets.end())
-          {
+          while (it != bullets.end()) {
             //--
             auto b = (*it);
             b->UpdatePosition();
             if ((b->pos.x < 0) ||
               (b->pos.x > WIN_WIDTH) ||
               (b->pos.y < 0) ||
-              (b->pos.y > WIN_HEIGHT))
-            {
+              (b->pos.y > WIN_HEIGHT)) {
               it = bullets.erase(it);
               continue;
             }
             else {
               //--
-              for (const auto rock : rocks)
-              {
-                if ((rock->iExplode == 0) && (b->Hit(rock)))
-                {
+              for (const auto rock : rocks) {
+                if ((rock->iExplode == 0) && (b->Hit(rock))) {
                   b->fDelete = true;
-                  if (rock->mass == 2)
-                  {
+                  if (rock->mass == 2) {
                     rock->fDelete = true;
                     //-- SubDivide
                     SubDivideRock(rock, rock->mass / 3.0);
                     // fPause = true
                   }
-                  else if (rock->mass == 1)
-                  {
+                  else if (rock->mass == 1) {
                     rock->fDelete = true;
                     //-- SubDivide
                     SubDivideRock(rock, rock->mass / 2.0);
                     // fPause = true
                   }
-                  else
-                  {
+                  else {
                     rock->iExplode = 1;
                     rock->InitExplosion();
 
@@ -549,15 +518,13 @@ int main(int argc, char* argv[])
 
           }
 
-          for (const auto& r : rocks)
-          {
+          for (const auto& r : rocks) {
             r->UpdatePosition();
             DoScreenFrameCollison(r, screenFrame);
           }
 
           // Do Collison Ship <-> Rocks
-          for (const auto& r : rocks)
-          {
+          for (const auto& r : rocks) {
             if ((!r->fDelete) && (r->iExplode == 0))
             {
               if (DoCollison(ship, r)) {
@@ -568,8 +535,7 @@ int main(int argc, char* argv[])
           }
 
           // Do collison between rocks
-          for (auto i = 0; i < rocks.size(); ++i)
-          {
+          for (auto i = 0; i < rocks.size(); ++i) {
             auto r = rocks[i];
             if (!(r->fDelete) && (r->iExplode == 0))
             {
@@ -586,11 +552,9 @@ int main(int argc, char* argv[])
 
           //--
           auto curTicks = SDL_GetTicks();
-          if ((curTicks - startExplodeUpdate) > 100)
-          {
+          if ((curTicks - startExplodeUpdate) > 100) {
             startExplodeUpdate = curTicks;
-            for (auto& rock : rocks)
-            {
+            for (auto& rock : rocks) {
               if (rock->iExplode > 0)
               {
                 rock->iExplode++;
@@ -604,8 +568,7 @@ int main(int argc, char* argv[])
           }
 
           //--
-          if ((curTicks - startRegenerate) > 5000)
-          {
+          if ((curTicks - startRegenerate) > 5000) {
             startRegenerate = curTicks;
             ship->IncSheild();
           }
@@ -620,9 +583,8 @@ int main(int argc, char* argv[])
         }
 
         //--
-        SDL_Rect rect = { 0, 0, WIN_WIDTH, WIN_HEIGHT };
         SDL_SetRenderDrawColor(renderer, 10, 10, 100, 255);
-        SDL_RenderFillRect(renderer, &rect);
+        SDL_RenderClear(renderer);
 
         //-- Draw Ship
         ship->Draw(renderer);
@@ -650,8 +612,7 @@ int main(int argc, char* argv[])
         //--
         SDL_RenderPresent(renderer);
 
-        if (rocks.size() == 0)
-        {
+        if (rocks.size() == 0) {
           NewGame();
           bullets.clear();
           fPause = true;
@@ -680,8 +641,7 @@ int main(int argc, char* argv[])
       SDL_DestroyTexture(shipTex2);
 
       //-- Renderer
-      if (renderer)
-      {
+      if (renderer) {
         SDL_DestroyRenderer(renderer);
       }
 
@@ -693,10 +653,6 @@ int main(int argc, char* argv[])
     SDL_FreeSurface(shipdSurface0);
     SDL_FreeSurface(shipdSurface1);
     SDL_FreeSurface(shipdSurface2);
-
-    //--
-    if (rockFactory) delete rockFactory;
-
 
     // Quit SDL subsystems
     SDL_Quit();

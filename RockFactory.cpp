@@ -11,6 +11,18 @@
 
 RockFactory::RockFactory(SDL_Renderer* renderer, std::filesystem::path resourcesDir) : renderer(renderer), resourcesDir(resourcesDir)
 {
+    AddTexture("rock00.png");
+    AddTexture("rock10.png");
+
+    AddTexture("rock20.png");
+    AddTexture("rock21.png");
+    AddTexture("rock22.png");
+    AddTexture("rock23.png");
+
+    AddTexture("rock30.png");
+    AddTexture("rock31.png");
+    AddTexture("rock32.png");
+    AddTexture("rock33.png");
 
 }
 
@@ -57,18 +69,13 @@ Rock* RockFactory::NewRock()
 
     auto ra = static_cast<double>(RandomInt(0, 360) * M_PI / 180.0);
 
-    std::string texName;
-    if (m == 2) {
-        texName = "rock00.png";
-    }
-    else {
-        texName = "rock10.png";
-    }
+    std::string texName = (m == 2) ? "rock00.png" : "rock10.png";
 
     auto r = new Rock(
         RVector2D{ px,py },
         RVector2D{ static_cast<float>(1.35f * cos(ra)),static_cast<float>(1.35f * sin(ra)) },
         m);
+    r->direction = static_cast<float>(RandomInt(0, 359));
     auto it = textures.find(texName);
     if (it != textures.end()) {
         r->curTex = it->second;
