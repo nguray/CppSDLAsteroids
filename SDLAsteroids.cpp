@@ -50,8 +50,8 @@ typedef enum
 #define WIN_HEIGHT 600
 
 bool fPause = true;
-std::shared_ptr<Ship> ship{
-    new Ship(RVector2D{WIN_WIDTH / 2.0, WIN_HEIGHT / 2.0}, -90.0) };
+
+std::shared_ptr<Ship> ship;
 
 std::vector<std::shared_ptr<Bullet>> bullets;
 std::vector<std::shared_ptr<Rock>> rocks;
@@ -115,7 +115,6 @@ bool DoCollison(std::shared_ptr<GameObject> obj0,
     auto tV1 = veloVec0.dot(utV12);
     auto nV2 = veloVec1.dot(unV12);
     auto tV2 = veloVec1.dot(utV12);
-    //SDL_Rect rect = { 0, 0, WIN_WIDTH, WIN_HEIGHT };
 
     auto sumMass = m0 + m1;
 
@@ -206,7 +205,7 @@ void SubDivideRock(std::shared_ptr<Rock> r, float m)
   auto v11 = RVector2D::normalize(v10) * normeV;
   textureName = fmt::format("rock{}0.png", iTexture);
   rocks.push_back(std::shared_ptr<Rock>(rockFactory->NewRock(p10, v11, m, textureName)));
-  // Direction 1h30
+  // Direction 1h30RVector2D{WIN_WIDTH / 2.0, WIN_HEIGHT / 2.0}
   auto v20 = uv - un;
   auto p20 = r->pos + (v20 * 10);
   auto v21 = RVector2D::normalize(v20) * normeV;
@@ -292,22 +291,6 @@ int main(int argc, char* argv[])
   else {
 
     //--
-    filePath = resDir / "Plane00.png";
-    std::cout << filePath.c_str() << std::endl;
-    // Load image at specified path
-    SDL_Surface* shipdSurface0 = IMG_Load(filePath.c_str());
-
-    filePath = resDir / "Plane01.png";
-    std::cout << filePath.c_str() << std::endl;
-    // Load image at specified path
-    SDL_Surface* shipdSurface1 = IMG_Load(filePath.c_str());
-
-    filePath = resDir / "Plane02.png";
-    std::cout << filePath.c_str() << std::endl;
-    // Load image at specified path
-    SDL_Surface* shipdSurface2 = IMG_Load(filePath.c_str());
-
-    //--
     srand(time(NULL));
 
     //--
@@ -343,15 +326,11 @@ int main(int argc, char* argv[])
       renderer = SDL_CreateRenderer(
         window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-      SDL_Texture* shipTex0 = SDL_CreateTextureFromSurface(renderer, shipdSurface0);
-      SDL_Texture* shipTex1 = SDL_CreateTextureFromSurface(renderer, shipdSurface1);
-      SDL_Texture* shipTex2 = SDL_CreateTextureFromSurface(renderer, shipdSurface2);
+      ship = std::make_shared<Ship>(renderer);
+      ship->SetPosition(RVector2D{ WIN_WIDTH / 2.0, WIN_HEIGHT / 2.0 });
+      ship->SetDirection(-90.0);
 
       rockFactory = std::make_unique<RockFactory>(renderer, resDir);
-      ship->idleTex = shipTex0;
-      ship->accelTex = shipTex1;
-      ship->decelTex = shipTex2;
-      ship->curTex = shipTex0;
 
       Uint32 startTimeV = SDL_GetTicks();
       Uint32 startExplodeUpdate = SDL_GetTicks();
@@ -633,11 +612,6 @@ int main(int argc, char* argv[])
       }
       Mix_CloseAudio();
 
-      //--
-      SDL_DestroyTexture(shipTex0);
-      SDL_DestroyTexture(shipTex1);
-      SDL_DestroyTexture(shipTex2);
-
       //-- Renderer
       if (renderer) {
         SDL_DestroyRenderer(renderer);
@@ -647,10 +621,6 @@ int main(int argc, char* argv[])
       SDL_DestroyWindow(window);
     }
 
-    //--
-    SDL_FreeSurface(shipdSurface0);
-    SDL_FreeSurface(shipdSurface1);
-    SDL_FreeSurface(shipdSurface2);
 
     // Quit SDL subsystems
     SDL_Quit();
