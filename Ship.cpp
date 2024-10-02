@@ -4,35 +4,63 @@
 \*---------------------------------------------------------------------------*/
 #include "Ship.h"
 #include <math.h>
+#include <filesystem>
+#include <SDL_image.h>
 
-Ship::Ship() : GameObject(),
+Ship::Ship(SDL_Renderer* renderer) : GameObject(),
 curTex(NULL),
 idleTex(NULL),
 accelTex(NULL),
 decelTex(NULL),
-shieldLevel(3)
+shieldLevel(3),
+renderer(renderer)
 {
+    std::filesystem::path resDir;
+    if (std::filesystem::exists("../resources")) {
+        resDir = std::filesystem::path("../resources");
+    }
+    else {
+        resDir = std::filesystem::path("./resources");
+    }
 
-}
+    //--
+    auto filePath = resDir / "Plane00.png";
+    // Load image at specified path
+    SDL_Surface* shipdSurface0 = IMG_Load(filePath.c_str());
 
-Ship::Ship(RVector2D p, float a) : GameObject(),
-curTex(NULL),
-idleTex(NULL),
-accelTex(NULL),
-decelTex(NULL),
-shieldLevel(3)
-{
-    pos = p;
-    direction = a;
-    double ra = a * M_PI / 180.0;
-    thrushUnit = RVector2D{ static_cast<float>(cos(ra)),static_cast<float>(sin(ra)) };
-    velocity = thrushUnit * 0.1;
-    mass = 2.0;
+    filePath = resDir / "Plane01.png";
+    // Load image at specified path
+    SDL_Surface* shipdSurface1 = IMG_Load(filePath.c_str());
+
+    filePath = resDir / "Plane02.png";
+    // Load image at specified path
+    SDL_Surface* shipdSurface2 = IMG_Load(filePath.c_str());
+
+    idleTex = SDL_CreateTextureFromSurface(renderer, shipdSurface0);
+    accelTex = SDL_CreateTextureFromSurface(renderer, shipdSurface1);
+    decelTex = SDL_CreateTextureFromSurface(renderer, shipdSurface2);
+    curTex = idleTex;
+
+    //--
+    SDL_FreeSurface(shipdSurface0);
+    SDL_FreeSurface(shipdSurface1);
+    SDL_FreeSurface(shipdSurface2);
+
+    mass = 1.7f;
     radius = (8.0 + static_cast<float>(shieldLevel)) * mass;
+
 }
 
 Ship::~Ship() {
+    //--
+    SDL_DestroyTexture(idleTex);
+    SDL_DestroyTexture(accelTex);
+    SDL_DestroyTexture(decelTex);
 
+}
+
+void Ship::SetPosition(const RVector2D& newPos) {
+    pos = newPos;
 }
 
 void Ship::DecSheild()
@@ -83,14 +111,14 @@ void Ship::Draw(SDL_Renderer* renderer)
 
 }
 
-void Ship::SetAngle(float a) {
+void Ship::SetDirection(float a) {
     direction = a;
     auto ra = (a * M_PI) / 180.0;
     thrushUnit = RVector2D{ static_cast<float>(cos(ra)),static_cast<float>(sin(ra)) };
 }
 
 void Ship::OffsetAngle(float da) {
-    SetAngle(direction + da);
+    SetDirection(direction + da);
 }
 
 void Ship::SetIdleThrush() {

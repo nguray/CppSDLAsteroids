@@ -4,20 +4,21 @@
 #include "GameObject.h"
 
 class Ship : public GameObject {
-
+    SDL_Renderer* renderer;
 public:
-    Ship();
-    Ship(RVector2D p, float a);
+    Ship(SDL_Renderer* renderer);
+    //    Ship(RVector2D p, float a);
     ~Ship();
 
     void Draw(SDL_Renderer* renderer) override;
     void UpdatePosition() override;
 
-    void SetAngle(float a);
+    void SetDirection(float a);
     void OffsetAngle(float da);
     void Accelerate(float d);
     void DecSheild();
     void IncSheild();
+    void SetPosition(const RVector2D& newPos);
 
     void SetIdleThrush();
     void SetForwardThrush();
