@@ -348,8 +348,6 @@ int main(int argc, char* argv[])
       SDL_Texture* shipTex2 = SDL_CreateTextureFromSurface(renderer, shipdSurface2);
 
       rockFactory = std::make_unique<RockFactory>(renderer, resDir);
-
-
       ship->idleTex = shipTex0;
       ship->accelTex = shipTex1;
       ship->decelTex = shipTex2;
