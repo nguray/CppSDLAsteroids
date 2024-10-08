@@ -24,7 +24,9 @@
 #include <math.h>
 #include <memory> // for std::unique_ptr
 #include <ostream>
-#include <sstream>
+#include <typeinfo>
+
+// Load image at specified pathlude <sstream>
 #include <stdio.h>
 #include <string>
 #include <utility> // for std::move::new((void*)__p) _Tp(std::forward<_Args>(__args)...);
@@ -45,6 +47,7 @@ typedef struct HighScore
   int score;
 } HighScore;
 
+// Load image at specified path
 typedef enum
 {
   STAND_BY,
@@ -114,7 +117,6 @@ bool DoCollison(std::shared_ptr<GameObject> obj0,
 
   if (d <= (r0 + r1))
   {
-
     auto nV12 = v;
     auto tV12 = v.normal();
 
@@ -147,7 +149,6 @@ bool DoCollison(std::shared_ptr<GameObject> obj0,
     newVeloVec1.mul(tV2);
     newVeloVec1 += v1;
     obj1->velocity = newVeloVec1;
-
     return true;
 
   }
@@ -238,7 +239,19 @@ void SubDivideRock(std::shared_ptr<Rock> r, float m)
 }
 
 
-constexpr const char* resoucesDir{ "../resources" };
+//constexpr const char* resoucesDir{ "../resources" };
+
+void Path2Str(const std::filesystem::path& filePath, char* strFilePath, int strSize)
+{
+  if (typeid(fs::path::value_type) == typeid(wchar_t)) {
+    std::snprintf(strFilePath, strSize, "%ws", filePath.c_str());
+  }
+  else {
+    std::snprintf(strFilePath, strSize, "%s", filePath.c_str());
+  }
+
+}
+
 
 int main(int argc, char* argv[])
 {
@@ -280,15 +293,19 @@ int main(int argc, char* argv[])
 
   // Open the font
   fs::path resDir;
+
   if (fs::exists("../resources")) {
-    resDir = fs::path("../resources");
+    resDir = fs::path(fs::u8path("../resources"));
   }
   else {
-    resDir = fs::path("./resources");
+    resDir = fs::path(fs::u8path("./resources"));
   }
 
-  auto filePath = resDir / "sansation.ttf";
-  gFont = TTF_OpenFont(filePath.c_str(), 18);
+  char myStr[128];
+
+  auto filePath = resDir / fs::u8path("sansation.ttf");
+  Path2Str(filePath, myStr, sizeof(myStr));
+  gFont = TTF_OpenFont(myStr, 18);
   // gFont = TTF_OpenFont( "../resources/sansation.ttf", 18 );
   if (gFont == NULL) {
     printf("Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError());
@@ -322,13 +339,15 @@ int main(int argc, char* argv[])
       // Mix_Music *tetrisMusic = Mix_LoadMUS("../resources/Tetris.wav");
 
       filePath = resDir / "344276__nsstudios__laser3.wav";
-      laserSound = Mix_LoadWAV(filePath.c_str());
+      Path2Str(filePath, myStr, sizeof(myStr));
+      laserSound = Mix_LoadWAV(myStr);
       if (laserSound != NULL) {
         Mix_VolumeChunk(laserSound, 15);
       }
 
       filePath = resDir / "asteroid-94614.mp3";
-      explosionSound = Mix_LoadWAV(filePath.c_str());
+      Path2Str(filePath, myStr, sizeof(myStr));
+      explosionSound = Mix_LoadWAV(myStr);
       if (explosionSound != NULL) {
         Mix_VolumeChunk(explosionSound, 15);
       }
@@ -348,7 +367,6 @@ int main(int argc, char* argv[])
       //Uint32 startTimeV = SDL_GetTicks();
       Uint32 startExplodeUpdate = SDL_GetTicks();
       Uint32 startRegenerate = SDL_GetTicks();
-
 
       Rock::InitCosSinValues();
 

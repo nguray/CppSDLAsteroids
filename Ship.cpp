@@ -7,6 +7,8 @@
 #include <filesystem>
 #include <SDL_image.h>
 
+extern void Path2Str(const std::filesystem::path& filePath, char* strFilePath, int strSize);
+
 Ship::Ship(SDL_Renderer* renderer) : GameObject(),
 curTex(NULL),
 idleTex(NULL),
@@ -18,24 +20,26 @@ renderer(renderer)
 
     std::filesystem::path resDir;
     if (std::filesystem::exists("../resources")) {
-        resDir = std::filesystem::path(u8"../resources");
+        resDir = std::filesystem::u8path("../resources");
     }
     else {
-        resDir = std::filesystem::path(u8"./resources");
+        resDir = std::filesystem::u8path("./resources");
     }
 
     //--
-    auto filePath = resDir / "Plane00.png";
     // Load image at specified path
-    SDL_Surface* shipdSurface0 = IMG_Load(filePath.c_str());
+    char myStr[128];
+    auto filePath = resDir / std::filesystem::u8path("Plane00.png");
+    Path2Str(filePath, myStr, sizeof(myStr));
+    SDL_Surface* shipdSurface0 = IMG_Load(myStr);
 
-    filePath = resDir / "Plane01.png";
-    // Load image at specified path
-    SDL_Surface* shipdSurface1 = IMG_Load(filePath.c_str());
+    filePath = resDir / std::filesystem::u8path("Plane01.png");
+    Path2Str(filePath, myStr, sizeof(myStr));
+    SDL_Surface* shipdSurface1 = IMG_Load(myStr);
 
-    filePath = resDir / "Plane02.png";
-    // Load image at specified path
-    SDL_Surface* shipdSurface2 = IMG_Load(filePath.c_str());
+    filePath = resDir / std::filesystem::u8path("Plane02.png");
+    Path2Str(filePath, myStr, sizeof(myStr));
+    SDL_Surface* shipdSurface2 = IMG_Load(myStr);
 
     idleTex = SDL_CreateTextureFromSurface(renderer, shipdSurface0);
     accelTex = SDL_CreateTextureFromSurface(renderer, shipdSurface1);

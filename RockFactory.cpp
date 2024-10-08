@@ -8,6 +8,7 @@
 #include <iostream>
 #include <SDL_image.h>
 
+extern void Path2Str(const std::filesystem::path& filePath, char* strFilePath, int strSize);
 
 RockFactory::RockFactory(SDL_Renderer* renderer, std::filesystem::path resourcesDir) : renderer(renderer), resourcesDir(resourcesDir)
 {
@@ -89,10 +90,11 @@ Rock* RockFactory::NewRock()
 
 void RockFactory::AddTexture(std::string textureFileName)
 {
-    auto filePath = resourcesDir / std::filesystem::path(textureFileName);
-    //std::cout << filePath.c_str() << std::endl;
+    char myStr[128];
     // Load image at specified path
-    SDL_Surface* surface = IMG_Load(filePath.c_str());
+    auto filePath = resourcesDir / std::filesystem::path(textureFileName);
+    Path2Str(filePath, myStr, sizeof(myStr));
+    SDL_Surface* surface = IMG_Load(myStr);
 
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
     std::pair<std::string, RTexture*> pair3 = std::make_pair(textureFileName, new RTexture(texture));

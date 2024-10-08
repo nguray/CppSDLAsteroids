@@ -7,7 +7,7 @@
 #include <filesystem>
 
 class RockFactory {
-    std::string resourcesDir;
+    std::filesystem::path resourcesDir;
     SDL_Renderer* renderer;
 public:
     RockFactory(SDL_Renderer* renderer, std::filesystem::path resourcesDir);
