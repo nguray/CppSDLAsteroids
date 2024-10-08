@@ -241,7 +241,7 @@ int main(int argc, char* argv[])
   // The surface contained by the window
 
   SDL_Renderer* renderer = NULL;
-  SDL_Surface* surface;
+  //SDL_Surface* surface;
 
   // std::cout << "Current working directory: " <<
   // std::filesystem::current_path() << std::endl;
@@ -331,7 +331,7 @@ int main(int argc, char* argv[])
 
       rockFactory = std::make_unique<RockFactory>(renderer, resDir);
 
-      Uint32 startTimeV = SDL_GetTicks();
+      //Uint32 startTimeV = SDL_GetTicks();
       Uint32 startExplodeUpdate = SDL_GetTicks();
       Uint32 startRegenerate = SDL_GetTicks();
 
@@ -457,7 +457,7 @@ int main(int argc, char* argv[])
             }
             else {
               //--
-              for (const auto rock : rocks) {
+              for (const auto& rock : rocks) {
                 if ((rock->iExplode == 0) && (b->Hit(rock))) {
                   b->fDelete = true;
                   if (rock->mass == 2) {
@@ -514,11 +514,11 @@ int main(int argc, char* argv[])
           }
 
           // Do collison between rocks
-          for (auto i = 0; i < rocks.size(); ++i) {
+          for (long unsigned int i = 0; i < rocks.size(); ++i) {
             auto r = rocks[i];
             if (!(r->fDelete) && (r->iExplode == 0))
             {
-              for (auto j = i + 1; j < rocks.size(); ++j)
+              for (long unsigned int j = i + 1; j < rocks.size(); ++j)
               {
                 auto r1 = rocks[j];
                 if (!(r1->fDelete) && (r1->iExplode == 0))
@@ -569,7 +569,7 @@ int main(int argc, char* argv[])
         ship->Draw(renderer);
 
         //-- Draw Bullets
-        for (const auto b : bullets) {
+        for (const auto& b : bullets) {
           b->Draw(renderer);
         }
 
