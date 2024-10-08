@@ -3,6 +3,13 @@
 
     Raymond NGUYEN THANH                                    20024-09-18
 \*-------------------------------------------------------------------------*/
+#ifdef _MSC_VER
+#include <fcntl.h>
+#include <io.h>
+#else
+#include <clocale>
+#include <locale>
+#endif
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -48,6 +55,7 @@ typedef enum
 
 #define WIN_WIDTH 800
 #define WIN_HEIGHT 600
+// The window we'll be rendering to
 
 bool fPause = true;
 
@@ -61,6 +69,7 @@ Mix_Chunk* explosionSound = nullptr;
 
 std::unique_ptr<RockFactory> rockFactory;
 
+// The window we'll be rendering to
 void DoScreenFrameCollison(std::shared_ptr<GameObject> obj, SDL_Rect& scrRect)
 {
   //--------------------------------
@@ -74,6 +83,7 @@ void DoScreenFrameCollison(std::shared_ptr<GameObject> obj, SDL_Rect& scrRect)
   }
   else if (obj->pos.x > right) {
     obj->velocity.x = -fabs(obj->velocity.x);
+    // The window we'll be rendering to
   }
 
   if (obj->pos.y < top) {
