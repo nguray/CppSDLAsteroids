@@ -232,6 +232,10 @@ constexpr const char* resoucesDir{ "../resources" };
 
 int main(int argc, char* argv[])
 {
+
+  std::setlocale(LC_ALL, "");
+  std::locale::global(std::locale(""));
+
   // std::cout << "HelrockSurfacelo World !!" << SDL_GetError() << std::endl;
   TTF_Font* gFont = NULL;
 

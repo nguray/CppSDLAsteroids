@@ -15,12 +15,13 @@ decelTex(NULL),
 shieldLevel(3),
 renderer(renderer)
 {
+
     std::filesystem::path resDir;
     if (std::filesystem::exists("../resources")) {
-        resDir = std::filesystem::path("../resources");
+        resDir = std::filesystem::path(u8"../resources");
     }
     else {
-        resDir = std::filesystem::path("./resources");
+        resDir = std::filesystem::path(u8"./resources");
     }
 
     //--
