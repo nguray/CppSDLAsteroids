@@ -158,8 +158,7 @@ void FireBullet()
   bullets.push_back(std::make_shared<Bullet>(ship->pos, v));
   if (laserSound != NULL) {
     Mix_PlayChannel(-1, laserSound, 0);
-  }        //SDL_Rect rect = { 0, 0, WIN_WIDTH, WIN_HEIGHT };
-
+  }
 
 }
 
@@ -336,6 +335,7 @@ int main(int argc, char* argv[])
       Uint32 startExplodeUpdate = SDL_GetTicks();
       Uint32 startRegenerate = SDL_GetTicks();
 
+
       Rock::InitCosSinValues();
 
       // Init new game
@@ -348,6 +348,7 @@ int main(int argc, char* argv[])
 
       // Main loop flag
       bool fQuitGame = false;
+
 
       int iRotate = 0;
       int iAccel = 0;
@@ -452,6 +453,7 @@ int main(int argc, char* argv[])
               (b->pos.y > WIN_HEIGHT)) {
               it = bullets.erase(it);
               continue;
+
             }
             else {
               //--
@@ -620,7 +622,6 @@ int main(int argc, char* argv[])
       //-- Destroy window
       SDL_DestroyWindow(window);
     }
-
 
     // Quit SDL subsystems
     SDL_Quit();

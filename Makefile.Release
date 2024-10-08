@@ -1,0 +1,75 @@
+#############################################################################
+# Makefile for building: SDLTetris release
+#############################################################################
+UNAME := $(shell uname)
+
+MAKEFILE      = Makefile.Release
+
+CC           	= gcc
+CXX          	= g++
+LINKER			= g++
+
+ifeq ($(UNAME),Linux)
+	CXXFLAGS        = -std=c++20 -Wall -W -Wparentheses -Wextra -fexceptions -pthread
+else
+	CXXFLAGS        = -std=c++20 -fno-keep-inline-dllexport -Wall -W -Wparentheses -Wextra -fexceptions -mthreads
+endif
+
+DEL_FILE      	= rm
+DEL_DIR         = rmdir
+MOVE            = move
+CHK_DIR_EXISTS= if not exist
+MKDIR           = mkdir
+INSTALL_FILE    = copy /y
+INSTALL_PROGRAM = copy /y
+INSTALL_DIR     = xcopy /s /q /y /i
+
+####### Files
+
+DESTDIR        = release
+
+SOURCES  = SDLAsteroids.cpp Bullet.cpp GameObject.cpp Rock.cpp \
+			RockFactory.cpp RTexture.cpp RVector2D.cpp Ship.cpp
+
+OBJ = $(SOURCES:.cpp=.o)
+OBJS_RELEASE = $(addprefix release/,$(OBJ))
+DEPS = $(SOURCES:.cpp=.d)
+DEPS_RELEASE = $(addprefix release/,$(DEPS))
+
+
+ifeq ($(UNAME),Linux)
+	PROGRAM = SDLAsteroids
+	INCLUDE_PATHS = -I/usr/include/SDL2
+	LIBRARY_PATHS = -L/usr/lib
+	LINKER_FLAGS  = -lSDL2main -lSDL2 -lSDL2_ttf -lSDL2_mixer -lSDL2_image -lfmt
+	TARGET        = $(DESTDIR)/SDLAsteroids
+else
+	PROGRAM = SDLAsteroids.exe
+	INCLUDE_PATHS = -IC:\msys64\mingw64\include\SDL2
+	LIBRARY_PATHS = -LC:\msys64\mingw64\lib
+	LINKER_FLAGS  = -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf -lSDL2_mixer -lfmt
+	TARGET        = $(DESTDIR)/SDLAsteroids.exe
+endif
+
+####### Build rules
+
+first: $(DESTDIR) all
+
+$(DESTDIR):
+	@echo "Folder $(DESTDIR) does not exist"
+	$(MKDIR) -p $@
+
+all: $(DESTDIR)/$(PROGRAM)
+
+$(DESTDIR)/$(PROGRAM) : $(OBJS_RELEASE)
+	$(CXX) $(OBJS_RELEASE) -o $(DESTDIR)/$(PROGRAM) $(LIBRARY_PATHS) $(LINKER_FLAGS)
+
+$(DESTDIR)/%.o: %.cpp
+	$(CXX) $(CXXFLAGS) $(INCLUDE_PATHS) -MMD -o $@ -c $<
+
+clean: FORCE
+	$(DEL_FILE) $(DESTDIR)/$(PROGRAM) $(DESTDIR)/*.o $(DESTDIR)/*.d
+
+-include $(DEPS_RELEASE)
+
+FORCE:
