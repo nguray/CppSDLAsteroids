@@ -3,3 +3,4 @@ debug/*
 release/*
 build/*
 .cache/*
+compile_commands.json
