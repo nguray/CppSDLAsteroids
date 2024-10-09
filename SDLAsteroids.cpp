@@ -247,7 +247,7 @@ void Path2Str(const std::filesystem::path& filePath, char* strFilePath, int strS
 {
 
 #ifdef _MSYS
-  std::sprintf_s(strFilePath, strSize, "%ws", filePath.c_str());
+  sprintf_s(strFilePath, strSize, "%ws", filePath.c_str());
 #else
   std::snprintf(strFilePath, strSize, "%s", filePath.c_str());
 #endif

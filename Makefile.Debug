@@ -46,7 +46,7 @@ else
 	PROGRAM = SDLAsteroids.exe
 	INCLUDE_PATHS = -IC:\msys64\mingw64\include\SDL2
 	LIBRARY_PATHS = -LC:\msys64\mingw64\lib
-	LINKER_FLAGS  = -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf -lSDL2_mixer -lfmt
+	LINKER_FLAGS  = -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf -lSDL2_mixer -lSDL2_image -lfmt
 	TARGET        = $(DESTDIR)/SDLAsteroids.exe
 endif
 
