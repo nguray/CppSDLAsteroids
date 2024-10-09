@@ -4,7 +4,7 @@
 #include "GameObject.h"
 
 class Ship : public GameObject {
-    SDL_Renderer* renderer;
+    SDL_Renderer* renderer = nullptr;
 public:
     Ship(SDL_Renderer* renderer);
     //    Ship(RVector2D p, float a);

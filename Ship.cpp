@@ -13,13 +13,13 @@
 
 extern void Path2Str(const std::filesystem::path& filePath, char* strFilePath, int strSize);
 
-Ship::Ship(SDL_Renderer* renderer) : GameObject(),
+Ship::Ship(SDL_Renderer* renderer) : GameObject(),renderer(renderer),
+shieldLevel(3),
 curTex(NULL),
 idleTex(NULL),
 accelTex(NULL),
-decelTex(NULL),
-shieldLevel(3),
-renderer(renderer)
+decelTex(NULL)
+
 {
 
     std::filesystem::path resDir;
