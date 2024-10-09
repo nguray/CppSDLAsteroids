@@ -8,6 +8,10 @@
 #include <iostream>
 #include <SDL_image.h>
 
+#ifndef M_PI
+#define M_PI (3.14159265358979323846)
+#endif
+
 extern void Path2Str(const std::filesystem::path& filePath, char* strFilePath, int strSize);
 
 RockFactory::RockFactory(SDL_Renderer* renderer, std::filesystem::path resourcesDir) : renderer(renderer), resourcesDir(resourcesDir)

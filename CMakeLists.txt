@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
+
     project(SDLAsteroids VERSION 0.1 LANGUAGES CXX)
 
     set(PROJECT_SOURCES
@@ -20,6 +21,16 @@ cmake_minimum_required(VERSION 3.5)
     find_package(SDL2 REQUIRED)
     find_package(SDL2_image REQUIRED)
     include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS})
+
+    if (MSYS)
+        message("--> MSYS " $ENV{USER})
+        add_compile_definitions(_MSYS )
+    endif()
+
+    if (LINUX)
+        message("--> LINUX " $ENV{USER})
+        #add_compile_definitions(_MSYS )
+    endif()
 
     target_compile_features(SDLAsteroids PUBLIC cxx_std_20)
 

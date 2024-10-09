@@ -12,7 +12,7 @@ LINKER			= g++
 ifeq ($(UNAME),Linux)
 	CXXFLAGS        = -std=c++20 -Wall -W -Wparentheses -Wextra -fexceptions -pthread
 else
-	CXXFLAGS        = -std=c++20 -fno-keep-inline-dllexport -Wall -W -Wparentheses -Wextra -fexceptions -mthreads
+	CXXFLAGS        = -std=c++20 -fno-keep-inline-dllexport -Wall -W -Wparentheses -Wextra -fexceptions -mthreads  -D _MSYS
 endif
 
 DEL_FILE      	= rm
