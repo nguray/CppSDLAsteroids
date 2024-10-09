@@ -40,6 +40,7 @@ namespace fs = std::filesystem;
 #include "Ship.h"
 #include "RockFactory.h"
 
+//#define _MSYS
 
 typedef struct HighScore
 {
@@ -180,6 +181,7 @@ int RandomInt(int a, int b)
   return a + r;
 }
 
+
 void NewGame()
 {
   //--------------------------------
@@ -243,12 +245,19 @@ void SubDivideRock(std::shared_ptr<Rock> r, float m)
 
 void Path2Str(const std::filesystem::path& filePath, char* strFilePath, int strSize)
 {
-  if (typeid(fs::path::value_type) == typeid(wchar_t)) {
-    std::snprintf(strFilePath, strSize, "%ws", filePath.c_str());
-  }
-  else {
-    std::snprintf(strFilePath, strSize, "%s", filePath.c_str());
-  }
+
+#ifdef _MSYS
+  std::sprintf_s(strFilePath, strSize, "%ws", filePath.c_str());
+#else
+  std::snprintf(strFilePath, strSize, "%s", filePath.c_str());
+#endif
+
+  // if (typeid(fs::path::value_type) == typeid(wchar_t)) {
+  //   std::swprintf(strFilePath, strSize, "%ls", filePath.c_str());
+  // }
+  // else {
+  //   std::snprintf(strFilePath, strSize, "%s", filePath.c_str());
+  // }
 
 }
 
@@ -268,7 +277,6 @@ int main(int argc, char* argv[])
   // The surface contained by the window
 
   SDL_Renderer* renderer = NULL;
-  //SDL_Surface* surface;
 
   // std::cout << "Current working directory: " <<
   // std::filesystem::current_path() << std::endl;
@@ -295,15 +303,15 @@ int main(int argc, char* argv[])
   fs::path resDir;
 
   if (fs::exists("../resources")) {
-    resDir = fs::path(fs::u8path("../resources"));
+    resDir = fs::path("../resources");
   }
   else {
-    resDir = fs::path(fs::u8path("./resources"));
+    resDir = fs::path("./resources");
   }
 
   char myStr[128];
 
-  auto filePath = resDir / fs::u8path("sansation.ttf");
+  auto filePath = resDir / fs::path("sansation.ttf");
   Path2Str(filePath, myStr, sizeof(myStr));
   gFont = TTF_OpenFont(myStr, 18);
   // gFont = TTF_OpenFont( "../resources/sansation.ttf", 18 );

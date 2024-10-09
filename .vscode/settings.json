@@ -55,7 +55,12 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "cinttypes": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "condition_variable": "cpp",
+        "mutex": "cpp",
+        "semaphore": "cpp",
+        "stop_token": "cpp",
+        "thread": "cpp"
     },
     "cmake.copyCompileCommands": "${workspaceFolder}/compile_commands.json",
     "files.trimTrailingWhitespace": true,

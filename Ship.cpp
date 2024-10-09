@@ -20,24 +20,24 @@ renderer(renderer)
 
     std::filesystem::path resDir;
     if (std::filesystem::exists("../resources")) {
-        resDir = std::filesystem::u8path("../resources");
+        resDir = std::filesystem::path("../resources");
     }
     else {
-        resDir = std::filesystem::u8path("./resources");
+        resDir = std::filesystem::path("./resources");
     }
 
     //--
     // Load image at specified path
     char myStr[128];
-    auto filePath = resDir / std::filesystem::u8path("Plane00.png");
+    auto filePath = resDir / std::filesystem::path("Plane00.png");
     Path2Str(filePath, myStr, sizeof(myStr));
     SDL_Surface* shipdSurface0 = IMG_Load(myStr);
 
-    filePath = resDir / std::filesystem::u8path("Plane01.png");
+    filePath = resDir / std::filesystem::path("Plane01.png");
     Path2Str(filePath, myStr, sizeof(myStr));
     SDL_Surface* shipdSurface1 = IMG_Load(myStr);
 
-    filePath = resDir / std::filesystem::u8path("Plane02.png");
+    filePath = resDir / std::filesystem::path("Plane02.png");
     Path2Str(filePath, myStr, sizeof(myStr));
     SDL_Surface* shipdSurface2 = IMG_Load(myStr);
 
